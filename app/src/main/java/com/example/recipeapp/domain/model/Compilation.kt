@@ -1,0 +1,25 @@
+package com.example.recipeapp.domain.model
+
+data class Compilation(
+    val approved_at: Int? = null,
+    val aspect_ratio: String? = null,
+    val beauty_url: String? = null,
+    val buzz_id: Int? = null,
+    val canonical_id: String? = null,
+    val country: String? = null,
+    val created_at: Int? = null,
+    val description: String? = null,
+    val draft_status: String? = null,
+    val id: Int? = null,
+    val is_shoppable: Boolean? = null,
+    val keywords: String? = null,
+    val language: String? = null,
+    val name: String? = null,
+    val promotion: String? = null,
+    val show: List<Show>? = null,
+    val slug: String? = null,
+    val thumbnail_alt_text: String? = null,
+    val thumbnail_url: String? = null,
+    val video_id: Int? = null,
+    val video_url: String? = null,
+)
