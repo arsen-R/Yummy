@@ -3,7 +3,9 @@ package com.example.recipeapp.di
 import com.example.recipeapp.BuildConfig
 import com.example.recipeapp.data.network.RecipeApi
 import com.example.recipeapp.data.repository.HomeRepositoryImpl
+import com.example.recipeapp.data.repository.RecipeDetailRepositoryImpl
 import com.example.recipeapp.domain.repository.HomeRepository
+import com.example.recipeapp.domain.repository.RecipeDetailRepository
 import com.example.recipeapp.domain.util.Constants
 import dagger.Module
 import dagger.Provides
@@ -56,4 +58,7 @@ object AppModule {
     @Provides
     fun provideHomeRepository(recipeApi: RecipeApi): HomeRepository =
         HomeRepositoryImpl(recipeApi = recipeApi)
+    @Provides
+    fun provideRecipeRepository(recipeApi: RecipeApi): RecipeDetailRepository =
+        RecipeDetailRepositoryImpl(recipeApi = recipeApi)
 }

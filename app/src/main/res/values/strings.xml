@@ -4,4 +4,6 @@
     <string name="home_screen">Home</string>
     <string name="search_screen">Search</string>
     <string name="favorite_screen">Favorite</string>
+
+    <string name="no_connection">Hmm… it looks like you\'re offline.</string>
 </resources>

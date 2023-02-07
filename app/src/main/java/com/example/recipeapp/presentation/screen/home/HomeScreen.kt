@@ -7,19 +7,23 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.rememberNavController
+import com.example.recipeapp.R
 import com.example.recipeapp.presentation.component.ErrorMessage
 import com.example.recipeapp.presentation.component.LoadingProgressBar
 import com.example.recipeapp.presentation.component.RecipeItem
+import com.example.recipeapp.presentation.navigation.Screen
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
-    val context = LocalContext.current
-    
+fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel(), navController: NavController) {
     val uiState = homeViewModel.uiState.collectAsStateWithLifecycle().value
 
     val refreshState = homeViewModel.uiState.collectAsStateWithLifecycle().value.isLoading
@@ -39,7 +43,14 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                         RecipeItem(
                             recipeResult = recipe,
                             onItemRecipeClick = {
-                                Toast.makeText(context, recipe?.name, Toast.LENGTH_LONG).show()
+                                navController.navigate(route = Screen.RecipeDetail.passId(recipe?.id!!)) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         )
                     }
@@ -47,7 +58,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
             }
         }
         uiState.error != null -> {
-            ErrorMessage(message = "Hmm... it looks like you're offline.", onRetryClick = {
+            ErrorMessage(message = stringResource(id = R.string.no_connection), onRetryClick = {
                 homeViewModel.fetchRecipeList()
             })
         }
@@ -59,5 +70,6 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
 @Composable
 fun HomeScreenPreview() {
     val homeViewModel: HomeViewModel = hiltViewModel()
-    HomeScreen(homeViewModel = homeViewModel)
+    val navController = rememberNavController()
+    HomeScreen(homeViewModel = homeViewModel, navController = navController)
 }

@@ -1,17 +1,14 @@
 package com.example.recipeapp.presentation.component
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,10 +29,19 @@ fun ErrorMessage(modifier: Modifier = Modifier, message: String, onRetryClick: (
         Button(
             onClick = onRetryClick,
             modifier = modifier
-                .padding(top = 5.dp),
+                .padding(top = 5.dp).align(Alignment.CenterHorizontally),
             colors = ButtonDefaults.buttonColors(MaterialTheme.colors.onPrimary)
         ) {
-            Text(text = "Try Again", color = Color.Black)
+            Icon(
+                imageVector = Icons.Default.Refresh,
+                contentDescription = "Refresh Icon",
+                )
+            Spacer(modifier = modifier.width(5.dp))
+            Text(
+                text = "Try Again",
+                color = Color.Black,
+                textAlign = TextAlign.End
+            )
         }
     }
 }

@@ -6,6 +6,7 @@ import com.example.recipeapp.data.util.Resources
 import com.example.recipeapp.domain.model.RecipeList
 import com.example.recipeapp.domain.repository.HomeRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ class HomeRepositoryImpl @Inject constructor(
     override fun getListRecipe(): Flow<Resources<RecipeList>> {
         return flow {
             emit(Resources.Loading())
+            delay(3000L)
             val result = recipeApi.getListRecipes().body()
             emit(Resources.Success(result?.toRecipeList()!!))
         }.catch { exception ->

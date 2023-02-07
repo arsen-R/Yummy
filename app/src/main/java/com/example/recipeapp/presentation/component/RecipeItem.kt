@@ -58,7 +58,7 @@ fun RecipeItem(
                                 Color.Transparent,
                                 Color.Black
                             ),
-                            startY = 280f
+                            startY = 250f
                         )
                     )
             )

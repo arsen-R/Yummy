@@ -1,14 +1,15 @@
 package com.example.recipeapp.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.recipeapp.domain.util.Constants
 import com.example.recipeapp.presentation.screen.favorite.FavoriteScreen
 import com.example.recipeapp.presentation.screen.home.HomeScreen
+import com.example.recipeapp.presentation.screen.recipe.RecipeDetailScreen
 import com.example.recipeapp.presentation.screen.search.SearchScreen
 
 @Composable
@@ -18,13 +19,23 @@ fun NavGraph(navHostController: NavHostController) {
         startDestination = Screen.Home.route
     ) {
         composable(route = Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(navController = navHostController)
         }
         composable(route = Screen.Search.route) {
             SearchScreen()
         }
         composable(route = Screen.Favorite.route) {
             FavoriteScreen()
+        }
+        composable(
+            route = Screen.RecipeDetail.route,
+            arguments = listOf(
+                navArgument(Constants.DETAIL_ARGUMENT_KEY) { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            backStackEntry.arguments?.getInt(Constants.DETAIL_ARGUMENT_KEY)?.let {
+                RecipeDetailScreen(recipeId = it, navController = navHostController)
+            }
         }
     }
 }
