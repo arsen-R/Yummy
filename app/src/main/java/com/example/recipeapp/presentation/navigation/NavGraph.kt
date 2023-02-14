@@ -1,6 +1,7 @@
 package com.example.recipeapp.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,6 +11,7 @@ import com.example.recipeapp.domain.util.Constants
 import com.example.recipeapp.presentation.screen.favorite.FavoriteScreen
 import com.example.recipeapp.presentation.screen.home.HomeScreen
 import com.example.recipeapp.presentation.screen.recipe.RecipeDetailScreen
+import com.example.recipeapp.presentation.screen.recipe.RecipeDetailViewModel
 import com.example.recipeapp.presentation.screen.search.SearchScreen
 
 @Composable
@@ -34,7 +36,8 @@ fun NavGraph(navHostController: NavHostController) {
             )
         ) { backStackEntry ->
             backStackEntry.arguments?.getInt(Constants.DETAIL_ARGUMENT_KEY)?.let {
-                RecipeDetailScreen(recipeId = it, navController = navHostController)
+                val viewModel: @Composable (movieId: Int) -> RecipeDetailViewModel = { hiltViewModel() }
+                RecipeDetailScreen(navController = navHostController, viewModel = viewModel(id))
             }
         }
     }

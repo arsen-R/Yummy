@@ -6,4 +6,10 @@
     <string name="favorite_screen">Favorite</string>
 
     <string name="no_connection">Hmm… it looks like you\'re offline.</string>
+    <string name="serving">serving</string>
+    <string name="servings">servings</string>
+
+    <string name="ingredient_for_label">Ingredients for</string>
+    <string name="related_recipes_label">Related Recipes</string>
+    <string name="preparation_label">Preparation</string>
 </resources>

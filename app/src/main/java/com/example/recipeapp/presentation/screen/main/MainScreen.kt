@@ -1,5 +1,6 @@
 package com.example.recipeapp.presentation.screen.main
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import com.example.recipeapp.presentation.component.BottomNavigationBar
 import com.example.recipeapp.presentation.component.TopBar
 import com.example.recipeapp.presentation.navigation.NavGraph
 import com.example.recipeapp.presentation.navigation.Screen
+import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
 fun MainScreen() {
@@ -62,12 +64,17 @@ fun MainScreen() {
     )
 }
 
+@Preview(showSystemUi = true, name = "Light mode")
 @Preview(
     showBackground = true,
     showSystemUi = true,
     device = Devices.PIXEL_2,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "Dark mode"
 )
 @Composable
 fun MainScreenPreview() {
-    MainScreen()
+    RecipeAppTheme {
+        MainScreen()
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.recipeapp.presentation.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -14,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.recipeapp.R
+import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
 fun TopBar(
@@ -30,11 +32,11 @@ fun TopBar(
                     fontWeight = FontWeight.Bold,
                     modifier = modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.h6,
-                    color = Color.Black
+                    color = MaterialTheme.colors.onPrimary
                 )
             }
         },
-        backgroundColor = MaterialTheme.colors.onPrimary,
+        backgroundColor = MaterialTheme.colors.primary,
         navigationIcon = if (!toolbarState) {
             {
                 IconButton(onClick = { navController.navigateUp() }) {
@@ -50,8 +52,14 @@ fun TopBar(
     )
 }
 
-@Preview
+@Preview(name = "Light mode")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "Dark mode"
+)
 @Composable
 fun TopBarPreview() {
-    TopBar(navController = rememberNavController(), toolbarState = true)
+    RecipeAppTheme {
+        TopBar(navController = rememberNavController(), toolbarState = true)
+    }
 }

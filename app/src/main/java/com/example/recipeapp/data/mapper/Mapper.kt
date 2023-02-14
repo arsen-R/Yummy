@@ -136,6 +136,7 @@ fun RecipeDto.toRecipe(): Recipe {
         aspect_ratio = this.aspect_ratio,
         beauty_url = this.beauty_url,
         buzz_id = this.buzz_id,
+        brand = this.brand?.toBrand(),
         canonical_id = this.canonical_id,
         compilations = this.compilations?.map { it.toCompilation() },
         cook_time_minutes = this.cook_time_minutes,
@@ -183,12 +184,14 @@ fun RecipeDto.toRecipe(): Recipe {
         yields = this.yields,
     )
 }
+
 fun RecipeResultDto.toRecipeResult(): RecipeResult {
     return RecipeResult(
         approved_at = this.approved_at,
         aspect_ratio = this.aspect_ratio,
         beauty_url = this.beauty_url,
         buzz_id = this.buzz_id,
+        brand = this.brand?.toBrand(),
         canonical_id = this.canonical_id,
         compilations = this.compilations?.map { it.toCompilation() },
         cook_time_minutes = this.cook_time_minutes,
@@ -237,6 +240,7 @@ fun RecipeResultDto.toRecipeResult(): RecipeResult {
         yields = this.yields,
     )
 }
+
 fun RecipeListDto.toRecipeList(): RecipeList {
     return RecipeList(
         count = this.count,
@@ -251,12 +255,14 @@ fun UserRatingsDto.toUserRatings(): UserRatings {
         score = this.score
     )
 }
+
 fun TotalTimeTierDto.toTotalTimeTier(): TotalTimeTier {
     return TotalTimeTier(
         display_tier = this.display_tier,
         tier = this.tier
     )
 }
+
 fun TopicDto.toTopic(): Topic {
     return Topic(
         name = this.name,
@@ -297,5 +303,14 @@ fun RenditionDto.toRendition(): Rendition {
         poster_url = this.poster_url,
         url = this.url,
         width = this.width,
+    )
+}
+
+fun BrandDto.toBrand(): Brand {
+    return Brand(
+        id = this.id,
+        image_url = this.image_url,
+        name = this.name,
+        slug = this.slug
     )
 }

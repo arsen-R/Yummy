@@ -18,26 +18,33 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.recipeapp.domain.model.RecipeResult
+import com.example.recipeapp.presentation.navigation.Screen
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecipeItem(
     recipeResult: RecipeResult?,
     modifier: Modifier = Modifier,
-    onItemRecipeClick: () -> Unit
+    navController: NavController,
+    //onItemRecipeClick: () -> Unit
 ) {
     Card(
-        modifier = modifier
+        modifier = modifier.fillMaxWidth()
             .padding(5.dp)
-            .height(170.dp),
+            .size(170.dp),
         shape = RoundedCornerShape(8.dp),
-        onClick = onItemRecipeClick
+        onClick = {
+            navController.navigate(route = Screen.RecipeDetail.passId(recipeResult?.id!!))
+        }
     ) {
         Box(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier,
             contentAlignment = Alignment.BottomCenter
         ) {
             AsyncImage(
@@ -58,7 +65,7 @@ fun RecipeItem(
                                 Color.Transparent,
                                 Color.Black
                             ),
-                            startY = 250f
+                            startY = 225f
                         )
                     )
             )
@@ -68,8 +75,7 @@ fun RecipeItem(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = recipeResult?.name
-                        ?: "Homemade Chicken Shawarma With Ben Stiller And Ahmed Badr",
+                    text = recipeResult?.name!!,
                     modifier = Modifier
                         .weight(2f)
                         .padding(10.dp),
@@ -101,5 +107,8 @@ fun RecipeItem(
 @Preview
 @Composable
 fun RecipeListItemPreview() {
-    RecipeItem(null, onItemRecipeClick = {})
+    val recipeResult = RecipeResult(
+        name = "Homemade Chicken Shawarma With Ben Stiller And Ahmed Badr",
+    )
+    RecipeItem(recipeResult = recipeResult, navController = rememberNavController())
 }

@@ -16,6 +16,9 @@ data class RecipeDto(
     @SerializedName("buzz_id")
     @Expose
     val buzz_id: Int? = null,
+    @SerializedName("brand")
+    @Expose
+    val brand: BrandDto? = null,
     @SerializedName("canonical_id")
     @Expose
     val canonical_id: String? = null,

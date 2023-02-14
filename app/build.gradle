@@ -64,9 +64,10 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
-
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
+    // Accompanist
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
     implementation 'com.google.accompanist:accompanist-swiperefresh:0.24.13-rc'
+    implementation "com.google.accompanist:accompanist-flowlayout:0.29.1-alpha"
     // Room
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"

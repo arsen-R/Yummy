@@ -5,6 +5,7 @@ data class RecipeResult(
     val aspect_ratio: String? = null,
     val beauty_url: String? = null,
     val buzz_id: Int? = null,
+    val brand: Brand? = null,
     val canonical_id: String? = null,
     val compilations: List<Compilation>? = null,
     val cook_time_minutes: Int? = null,

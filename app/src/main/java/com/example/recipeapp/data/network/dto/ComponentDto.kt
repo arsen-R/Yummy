@@ -16,13 +16,13 @@ data class ComponentDto(
     @SerializedName("linked_recipe")
     @Expose
     val linked_recipe: LinkedRecipeDto? = null,
-    @SerializedName("measurement")
+    @SerializedName("measurements")
     @Expose
     val measurements: List<MeasurementDto>? = null,
     @SerializedName("position")
     @Expose
     val position: Int? = null,
-    @SerializedName("raw_textc")
+    @SerializedName("raw_text")
     @Expose
     val raw_text: String? = null,
 )

@@ -1,6 +1,6 @@
 package com.example.recipeapp.ui.theme
 
-import androidx.annotation.ColorRes
+import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -10,16 +10,18 @@ import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
+    primary = DarkColor,
     primaryVariant = Purple700,
-    secondary = Teal200
+    surface = DarkCardBackground,
+    onPrimary = Color.White,
 )
 
+@SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
-    primary = Purple500,
+    primary = Color.White,
     primaryVariant = Purple700,
-    secondary = Teal200,
-    onPrimary = Color.White,
+    surface = Color.White,
+    onPrimary = Color.Black,
     /* Other default colors to override
     background = Color.White,
     surface = Color.White,
