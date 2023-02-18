@@ -1,10 +1,14 @@
 package com.example.recipeapp.presentation.screen.home
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,11 +24,13 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel(), navController: NavController) {
+    val context = LocalContext.current
     val uiState = homeViewModel.uiState.collectAsStateWithLifecycle().value
 
     val refreshState = homeViewModel.uiState.collectAsStateWithLifecycle().value.isLoading
 
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = uiState.isLoading != refreshState)
+    val swipeRefreshState =
+        rememberSwipeRefreshState(isRefreshing = uiState.isLoading != refreshState)
 
     when {
         uiState.isLoading -> {
@@ -36,9 +42,24 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel(), navController: Na
             }) {
                 LazyVerticalGrid(columns = GridCells.Fixed(2)) {
                     items(uiState.recipe) { recipe ->
+                        val isRecipeSaved = remember {
+                            mutableStateOf(homeViewModel.isRecipeAdded(recipe?.id!!))
+                        }
                         RecipeItem(
                             recipeResult = recipe,
-                            navController = navController
+                            navController = navController,
+                            isRecipeSaved = isRecipeSaved.value,
+                            onSavedRecipeClick = {
+                                isRecipeSaved.value = !isRecipeSaved.value
+                                if (isRecipeSaved.value) {
+                                    homeViewModel.insertRecipe(recipe!!)
+                                    Log.d("Added And Remove Recipe", "${isRecipeSaved.value}")
+                                    Toast.makeText(context, "Saved", Toast.LENGTH_LONG).show()
+                                } else {homeViewModel.removeRecipe(recipe?.id!!)
+                                    Log.d("Added And Remove Recipe", "${isRecipeSaved.value}")
+                                    Toast.makeText(context, "Removed", Toast.LENGTH_LONG).show()
+                                }
+                            }
                         )
                     }
                 }

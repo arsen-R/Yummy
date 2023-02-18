@@ -27,7 +27,7 @@ fun NavGraph(navHostController: NavHostController) {
             SearchScreen()
         }
         composable(route = Screen.Favorite.route) {
-            FavoriteScreen()
+            FavoriteScreen(navController = navHostController)
         }
         composable(
             route = Screen.RecipeDetail.route,

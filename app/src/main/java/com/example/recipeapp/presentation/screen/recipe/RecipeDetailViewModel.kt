@@ -3,18 +3,18 @@ package com.example.recipeapp.presentation.screen.recipe
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipeapp.data.repository.RecipeDetailRepositoryImpl
+import com.example.recipeapp.data.repository.RecipeRepositoryImpl
 import com.example.recipeapp.data.util.Resources
+import com.example.recipeapp.domain.model.RecipeResult
 import com.example.recipeapp.domain.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipeDetailViewModel @Inject constructor(
-    private val recipeDetailRepository: RecipeDetailRepositoryImpl,
+    private val repository: RecipeRepositoryImpl,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -28,7 +28,7 @@ class RecipeDetailViewModel @Inject constructor(
     private fun getRecipeDetails(recipeId: Int) {
         viewModelScope.launch {
             try {
-                recipeDetailRepository.getRecipeDetail(recipeId).collectLatest { response ->
+                repository.getRecipeDetail(recipeId).collectLatest { response ->
                     when (response) {
                         is Resources.Loading -> {
                             _uiState.value = _uiState.value.copy(
@@ -64,7 +64,7 @@ class RecipeDetailViewModel @Inject constructor(
     }
     private fun getSimilarRecipe(recipeId: Int) {
         viewModelScope.launch {
-            recipeDetailRepository.getSimilarRecipes(recipeId).collectLatest { response ->
+            repository.getSimilarRecipes(recipeId).collectLatest { response ->
                 try {
                     when(response) {
                         is Resources.Loading -> {
@@ -104,4 +104,18 @@ class RecipeDetailViewModel @Inject constructor(
         getRecipeDetails(recipeId)
         getSimilarRecipe(recipeId)
     }
+
+    fun insertRecipe(recipe: RecipeResult) {
+        viewModelScope.launch {
+            repository.insertRecipe(recipe)
+        }
+    }
+
+    fun removeRecipe(recipeId: Int) {
+        viewModelScope.launch {
+            repository.removeRecipe(recipeId)
+        }
+    }
+
+    fun isRecipeAdded(recipeId: Int) = repository.isRecipeSaved(recipeId)
 }

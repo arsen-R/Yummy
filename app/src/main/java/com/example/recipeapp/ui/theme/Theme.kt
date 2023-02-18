@@ -35,7 +35,7 @@ private val LightColorPalette = lightColors(
 fun RecipeAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val systemUIController = rememberSystemUiController()
     val colors = if (darkTheme) {
-        systemUIController.setSystemBarsColor(Color.Transparent)
+        systemUIController.setSystemBarsColor(Color.Black)
         DarkColorPalette
     } else {
         systemUIController.setSystemBarsColor(Color.White)

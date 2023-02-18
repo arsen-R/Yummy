@@ -1,11 +1,13 @@
 package com.example.recipeapp.di
 
+import android.app.Application
+import androidx.room.Room
 import com.example.recipeapp.BuildConfig
+import com.example.recipeapp.data.database.RecipeDatabase
+import com.example.recipeapp.data.database.dao.RecipeDao
 import com.example.recipeapp.data.network.RecipeApi
-import com.example.recipeapp.data.repository.HomeRepositoryImpl
-import com.example.recipeapp.data.repository.RecipeDetailRepositoryImpl
-import com.example.recipeapp.domain.repository.HomeRepository
-import com.example.recipeapp.domain.repository.RecipeDetailRepository
+import com.example.recipeapp.data.repository.RecipeRepositoryImpl
+import com.example.recipeapp.domain.repository.RecipeRepository
 import com.example.recipeapp.domain.util.Constants
 import dagger.Module
 import dagger.Provides
@@ -22,7 +24,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideHttpClient(): OkHttpClient = OkHttpClient.Builder()
@@ -52,13 +53,25 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideRecipeDatabase(application: Application): RecipeDatabase {
+        return Room.databaseBuilder(
+            application,
+            RecipeDatabase::class.java,
+            Constants.DATABASE_NAME
+        ).allowMainThreadQueries().build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecipeDao(recipeDatabase: RecipeDatabase): RecipeDao {
+        return recipeDatabase.recipeDao()
+    }
+    @Provides
+    @Singleton
     fun provideRecipeApi(retrofit: Retrofit): RecipeApi =
         retrofit.create(RecipeApi::class.java)
 
     @Provides
-    fun provideHomeRepository(recipeApi: RecipeApi): HomeRepository =
-        HomeRepositoryImpl(recipeApi = recipeApi)
-    @Provides
-    fun provideRecipeRepository(recipeApi: RecipeApi): RecipeDetailRepository =
-        RecipeDetailRepositoryImpl(recipeApi = recipeApi)
+    fun provideHomeRepository(recipeApi: RecipeApi, recipeDao: RecipeDao): RecipeRepository =
+        RecipeRepositoryImpl(recipeApi = recipeApi, recipeDao = recipeDao)
 }

@@ -21,30 +21,27 @@ import com.example.recipeapp.R
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
-fun TopBar(
+fun DetailTopBar(
+    navController: NavController,
     modifier: Modifier = Modifier,
-    title: String,
-    toolbarState: Boolean
+
 ) {
-    AnimatedVisibility(
-        visible = toolbarState,
-        enter = slideInVertically(initialOffsetY = { -it }),
-        exit = slideOutVertically(targetOffsetY = { -it })
-    ) {
         TopAppBar(
             modifier = modifier.fillMaxWidth(),
-            title = {
-                Text(
-                    text = title,
-                    fontWeight = FontWeight.Bold,
-                    modifier = modifier.fillMaxWidth(),
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            },
+            title = {},
             backgroundColor = MaterialTheme.colors.primary,
+            navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            },
+            actions = {
+
+            }
         )
-    }
 }
 
 @Preview(name = "Light mode")
@@ -53,8 +50,8 @@ fun TopBar(
     name = "Dark mode"
 )
 @Composable
-fun TopBarPreview() {
+fun DetailTopBarPreview() {
     RecipeAppTheme {
-        TopBar(toolbarState = true, title = stringResource(id = R.string.app_name))
+        DetailTopBar(navController = rememberNavController())
     }
 }

@@ -52,7 +52,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation "androidx.compose.ui:ui:$compose_ui_version"
@@ -70,9 +70,8 @@ dependencies {
     implementation "com.google.accompanist:accompanist-flowlayout:0.29.1-alpha"
     // Room
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
-    implementation "androidx.room:room-coroutines:$room_coroutines_version"
+    implementation "androidx.room:room-ktx:$room_version"
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
@@ -87,11 +86,11 @@ dependencies {
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha05"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_version"
     // Coil
     implementation "io.coil-kt:coil-compose:$coil_version"
 }

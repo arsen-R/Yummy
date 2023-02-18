@@ -12,4 +12,6 @@
     <string name="ingredient_for_label">Ingredients for</string>
     <string name="related_recipes_label">Related Recipes</string>
     <string name="preparation_label">Preparation</string>
+
+    <string name="empty_saved_recipe">Like recipes to save them for later. We\'ll organize them into cookbooks for you!</string>
 </resources>
