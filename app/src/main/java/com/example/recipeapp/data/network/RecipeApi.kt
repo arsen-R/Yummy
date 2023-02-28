@@ -1,6 +1,5 @@
 package com.example.recipeapp.data.network
 
-import com.example.recipeapp.data.network.dto.RecipeDto
 import com.example.recipeapp.data.network.dto.RecipeListDto
 import com.example.recipeapp.data.network.dto.RecipeResultDto
 import com.example.recipeapp.domain.util.Constants
@@ -23,5 +22,10 @@ interface RecipeApi {
     @GET("/recipes/list-similarities")
     suspend fun getSimilarRecipes(
         @Query("recipe_id") recipeId: Int
+    ): Response<RecipeListDto>
+
+    @GET("/recipes/list")
+    suspend fun getSearchRecipe(
+        @Query("q") query: String
     ): Response<RecipeListDto>
 }

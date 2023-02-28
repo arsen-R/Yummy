@@ -1,7 +1,5 @@
 package com.example.recipeapp.presentation.screen.recipe
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -10,7 +8,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,14 +21,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import com.example.recipeapp.R
-import com.example.recipeapp.domain.model.*
-import com.example.recipeapp.domain.model.Unit
+import com.example.recipeapp.domain.model.RecipeList
+import com.example.recipeapp.domain.model.RecipeResult
 import com.example.recipeapp.presentation.component.*
 
 @Composable
@@ -40,7 +38,7 @@ fun RecipeDetailScreen(
     navController: NavController,
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
-    val recipeDetail = viewModel.uiState.collectAsState().value
+    val recipeDetail = viewModel.uiState.collectAsStateWithLifecycle().value
 
     Scaffold(topBar = {
         DetailTopBar(navController = navController)
@@ -52,7 +50,6 @@ fun RecipeDetailScreen(
                 }
                 recipeDetail.recipe != null -> {
                     RecipeDetail(
-                        //viewModel = viewModel,
                         navController = navController,
                         recipe = recipeDetail.recipe,
                         similarRecipe = recipeDetail.similarRecipe,
@@ -69,8 +66,6 @@ fun RecipeDetailScreen(
                 }
             }
         })
-    Log.d("List Recipe Response", "Detail Screen Recipe = ${recipeDetail.recipe}")
-    Log.d("List Recipe Response", "Detail Screen Similar = ${recipeDetail.similarRecipe}")
 }
 
 @Composable
@@ -171,11 +166,8 @@ fun RecipeDetail(
                             isRecipeSaved.value = !isRecipeSaved.value
                             if (isRecipeSaved.value) {
                                 viewModel.insertRecipe(similar!!)
-                                Log.d("Added And Remove Recipe", "${isRecipeSaved.value}")
-
                             } else {
                                 viewModel.removeRecipe(similar?.id!!)
-                                Log.d("Added And Remove Recipe", "${isRecipeSaved.value}")
                             }
                         }
                     )

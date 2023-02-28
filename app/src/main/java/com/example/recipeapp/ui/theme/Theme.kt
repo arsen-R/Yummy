@@ -36,9 +36,11 @@ fun RecipeAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
     val systemUIController = rememberSystemUiController()
     val colors = if (darkTheme) {
         systemUIController.setSystemBarsColor(Color.Black)
+        systemUIController.setNavigationBarColor(DarkColor)
         DarkColorPalette
     } else {
         systemUIController.setSystemBarsColor(Color.White)
+        systemUIController.setNavigationBarColor(Color.White)
         LightColorPalette
     }
 

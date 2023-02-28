@@ -385,7 +385,7 @@ fun RecipeResult.toRecipeResultEntity(): RecipeResultEntity {
         cook_time_minutes = this.cook_time_minutes,
         country = this.country,
         created_at = this.created_at,
-       // credits = this.credits?.map { it.toCredit() },
+        // credits = this.credits?.map { it.toCredit() },
         description = this.description,
         draft_status = this.draft_status,
         id = this.id,
@@ -426,5 +426,12 @@ fun RecipeResult.toRecipeResultEntity(): RecipeResultEntity {
         video_id = this.video_id,
         video_url = this.video_url,
         yields = this.yields,
+    )
+}
+
+fun TagsListDto.toTagsList(): TagsList {
+    return TagsList(
+        count = this.count,
+        results = this.results
     )
 }

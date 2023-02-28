@@ -37,9 +37,6 @@ fun DetailTopBar(
                         contentDescription = "Back"
                     )
                 }
-            },
-            actions = {
-
             }
         )
 }

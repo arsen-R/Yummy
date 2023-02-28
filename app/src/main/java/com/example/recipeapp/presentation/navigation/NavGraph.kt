@@ -24,7 +24,7 @@ fun NavGraph(navHostController: NavHostController) {
             HomeScreen(navController = navHostController)
         }
         composable(route = Screen.Search.route) {
-            SearchScreen()
+            SearchScreen(navController = navHostController)
         }
         composable(route = Screen.Favorite.route) {
             FavoriteScreen(navController = navHostController)

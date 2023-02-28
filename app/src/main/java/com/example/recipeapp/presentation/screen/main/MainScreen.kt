@@ -50,8 +50,7 @@ fun MainScreen() {
         }
         Screen.Search.route -> {
             bottomBarState.value = true
-            toolbarState.value = true
-            toolbarTitle.value = stringResource(id = R.string.search_screen)
+            toolbarState.value = false
         }
         else -> {
             bottomBarState.value = false

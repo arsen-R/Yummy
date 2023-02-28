@@ -72,6 +72,4 @@ class HomeViewModel @Inject constructor(
     }
 
     fun isRecipeAdded(recipeId: Int) = repository.isRecipeSaved(recipeId)
-
-
 }

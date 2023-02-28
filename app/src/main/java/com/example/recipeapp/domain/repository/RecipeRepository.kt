@@ -12,6 +12,7 @@ interface RecipeRepository {
 
     suspend fun getSimilarRecipes(recipeId: Int): Flow<Resources<RecipeList>>
 
+    suspend fun searchRecipe(query: String): Flow<Resources<RecipeList>>
     fun getAllSavedRecipes(): Flow<List<RecipeResult>>
 
     suspend fun insertRecipe(recipeResult: RecipeResult)

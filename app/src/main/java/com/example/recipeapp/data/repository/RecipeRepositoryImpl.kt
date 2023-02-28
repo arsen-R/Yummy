@@ -51,6 +51,16 @@ class RecipeRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
+    override suspend fun searchRecipe(query: String): Flow<Resources<RecipeList>> {
+        return flow {
+            emit(Resources.Loading())
+            val result = recipeApi.getSearchRecipe(query).body()
+            emit(Resources.Success(result?.toRecipeList()))
+        }.catch {exception ->
+            emit(Resources.Error(exception))
+        }.flowOn(Dispatchers.IO)
+    }
+
     override fun getAllSavedRecipes(): Flow<List<RecipeResult>> {
         return recipeDao.getAllRecipes().map { entities -> entities.map { it.toRecipeResult() } }
     }
