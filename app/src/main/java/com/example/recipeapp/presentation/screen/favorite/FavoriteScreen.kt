@@ -15,7 +15,7 @@ import com.example.recipeapp.presentation.component.RecipeItem
 @Composable
 fun FavoriteScreen(viewModel: FavoriteViewModel = hiltViewModel(), navController: NavController) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
-    if (uiState.isNullOrEmpty()) {
+    if (uiState.isEmpty()) {
         EmptyScreen()
     } else {
         LazyVerticalGrid(columns = GridCells.Fixed(2)) {

@@ -52,6 +52,11 @@ fun MainScreen() {
             bottomBarState.value = true
             toolbarState.value = false
         }
+        Screen.Profile.route -> {
+            bottomBarState.value = true
+            toolbarState.value = true
+            toolbarTitle.value = stringResource(id = R.string.profile_screen)
+        }
         else -> {
             bottomBarState.value = false
             toolbarState.value = false

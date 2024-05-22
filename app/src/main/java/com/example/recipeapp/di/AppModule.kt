@@ -71,7 +71,4 @@ object AppModule {
     fun provideRecipeApi(retrofit: Retrofit): RecipeApi =
         retrofit.create(RecipeApi::class.java)
 
-    @Provides
-    fun provideRecipeRepository(recipeApi: RecipeApi, recipeDao: RecipeDao): RecipeRepository =
-        RecipeRepositoryImpl(recipeApi = recipeApi, recipeDao = recipeDao)
 }

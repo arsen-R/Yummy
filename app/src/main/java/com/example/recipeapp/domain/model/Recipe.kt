@@ -29,6 +29,7 @@ data class Recipe(
     val prep_time_minutes: Int? = null,
     val price: Price? = null,
     val promotion: String? = null,
+    val recipes: List<Recipe>? = null,
     val renditions: List<Rendition>? = null,
     val sections: List<Section>? = null,
     val seo_path: String? = null,

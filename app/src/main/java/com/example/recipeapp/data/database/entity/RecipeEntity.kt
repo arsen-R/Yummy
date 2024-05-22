@@ -1,5 +1,9 @@
 package com.example.recipeapp.data.database.entity
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "recipe_result_table")
 data class RecipeEntity(
     val approved_at: Int? = null,
     val aspect_ratio: String? = null,
@@ -14,6 +18,7 @@ data class RecipeEntity(
     //val credits: List<Credit>? = null,
     val description: String? = null,
     val draft_status: String? = null,
+    @PrimaryKey
     val id: Int? = null,
     val inspired_by_url: String? = null,
     //val instructions: List<Instruction>? = null,
@@ -29,6 +34,7 @@ data class RecipeEntity(
     val prep_time_minutes: Int? = null,
     //val price: Price? = null,
     val promotion: String? = null,
+    //val recipes: List<Recipe>? = null,
     //val renditions: List<Rendition>? = null,
     //val sections: List<Section>? = null,
     val seo_path: String? = null,

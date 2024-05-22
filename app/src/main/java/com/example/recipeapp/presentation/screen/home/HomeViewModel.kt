@@ -2,22 +2,22 @@ package com.example.recipeapp.presentation.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipeapp.data.repository.RecipeRepositoryImpl
-import com.example.recipeapp.data.util.Resources
-import com.example.recipeapp.domain.model.RecipeResult
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.recipeapp.domain.model.Recipe
+import com.example.recipeapp.domain.repository.RecipeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: RecipeRepositoryImpl
+    private val repository: RecipeRepository
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    private val _uiState: MutableStateFlow<PagingData<Recipe>> =
+        MutableStateFlow(PagingData.empty())
+    val uiState: StateFlow<PagingData<Recipe>> = _uiState.asStateFlow()
 
     init {
         fetchRecipeList()
@@ -25,41 +25,20 @@ class HomeViewModel @Inject constructor(
 
     fun fetchRecipeList() {
         viewModelScope.launch {
-            try {
-                repository.getListRecipe().collectLatest { response ->
-                    when (response) {
-                        is Resources.Loading -> {
-                            _uiState.value = _uiState.value.copy(
-                                isLoading = true,
-                                recipe = null,
-                                error = null
-                            )
-                        }
-                        is Resources.Success -> {
-                            _uiState.value = _uiState.value.copy(
-                                isLoading = false,
-                                recipe = response.data?.results ?: emptyList(),
-                                error = null
-                            )
-                        }
-                        is Resources.Error -> {
-                            _uiState.value =
-                                _uiState.value.copy(
-                                    isLoading = false,
-                                    recipe = null,
-                                    error = response.exception
-                                )
-                        }
-                    }
-                }
-            } catch (exception: Exception) {
-                _uiState.value =
-                    _uiState.value.copy(isLoading = false, recipe = null, error = exception)
-            }
+            getRecipeList()
         }
     }
 
-    fun insertRecipe(recipe: RecipeResult) {
+    private suspend fun getRecipeList() {
+        repository.getListRecipes()
+            .distinctUntilChanged()
+            .cachedIn(viewModelScope)
+            .collectLatest {
+                _uiState.value = it
+        }
+    }
+
+    fun insertRecipe(recipe: Recipe) {
         viewModelScope.launch {
             repository.insertRecipe(recipe)
         }

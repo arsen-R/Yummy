@@ -1,9 +1,7 @@
 package com.example.recipeapp.presentation.component
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -18,7 +16,7 @@ import com.example.recipeapp.domain.model.Component
 import com.example.recipeapp.domain.model.Ingredient
 import com.example.recipeapp.domain.model.Measurement
 import com.example.recipeapp.domain.model.Section
-import com.example.recipeapp.domain.model.Unit
+import com.example.recipeapp.domain.model.Units
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
@@ -36,7 +34,7 @@ fun IngredientItemListHeader(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
-                modifier = modifier.padding(5.dp),
+                modifier = modifier.padding(vertical = 5.dp),
             ) {
                 ingredient?.name?.let { sectionName ->
                     Text(
@@ -66,13 +64,13 @@ fun IngredientItemList(modifier: Modifier = Modifier, components: Component) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        var extraComment = ""
+        var extraComment = StringBuilder()
         if (components.extra_comment?.isNotBlank()!!) {
-            extraComment += ", ${components.extra_comment}"
+            extraComment.append(", ${components.extra_comment}")
         }
         components.ingredient?.name?.let { ingredientName ->
             Text(
-                text = "$ingredientName $extraComment",
+                text = "$ingredientName$extraComment",
                 modifier = modifier
                     .weight(.5f)
                     .padding(end = 15.dp),
@@ -108,12 +106,12 @@ fun IngredientItemListHeaderPreview() {
         name = "Marinade", components = listOf(
             Component(
                 ingredient = Ingredient(name = "cumin"), measurements = listOf(
-                    Measurement(quantity = "1", unit = Unit(name = "teaspoon"))
+                    Measurement(quantity = "1", unit = Units(name = "teaspoon"))
                 )
             ),
             Component(
                 ingredient = Ingredient(name = "ground cardamom"), measurements = listOf(
-                    Measurement(quantity = "1", unit = Unit(name = "teaspoon")),
+                    Measurement(quantity = "1", unit = Units(name = "teaspoon")),
                 )
             )
         )
@@ -133,8 +131,8 @@ fun IngredientItemListHeaderPreview() {
 fun IngredientItemListPreview() {
     val component = Component(
         ingredient = Ingredient(name = "cumin"), measurements = listOf(
-            Measurement(quantity = "1", unit = Unit(name = "teaspoon")),
-            Measurement(quantity = "1", unit = Unit(name = "teaspoon"))
+            Measurement(quantity = "1", unit = Units(name = "teaspoon")),
+            Measurement(quantity = "1", unit = Units(name = "teaspoon"))
         ),
         extra_comment = ""
     )

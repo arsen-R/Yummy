@@ -10,6 +10,8 @@ import androidx.navigation.navArgument
 import com.example.recipeapp.domain.util.Constants
 import com.example.recipeapp.presentation.screen.favorite.FavoriteScreen
 import com.example.recipeapp.presentation.screen.home.HomeScreen
+import com.example.recipeapp.presentation.screen.login.SignInScreen
+import com.example.recipeapp.presentation.screen.profile.ProfileScreen
 import com.example.recipeapp.presentation.screen.recipe.RecipeDetailScreen
 import com.example.recipeapp.presentation.screen.recipe.RecipeDetailViewModel
 import com.example.recipeapp.presentation.screen.search.SearchScreen
@@ -28,6 +30,9 @@ fun NavGraph(navHostController: NavHostController) {
         }
         composable(route = Screen.Favorite.route) {
             FavoriteScreen(navController = navHostController)
+        }
+        composable(route = Screen.Profile.route) {
+            ProfileScreen()
         }
         composable(
             route = Screen.RecipeDetail.route,

@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class RecipeListDto(
     @SerializedName("count")
     @Expose
-    val count: Int? = null,
+    val count: Int?,
     @SerializedName("results")
     @Expose
-    val results: List<RecipeResultDto?>? = null,
+    val results: List<RecipeDto?>?,
 )

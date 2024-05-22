@@ -3,18 +3,21 @@ package com.example.recipeapp.presentation.screen.recipe
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipeapp.data.repository.RecipeRepositoryImpl
 import com.example.recipeapp.data.util.Resources
-import com.example.recipeapp.domain.model.RecipeResult
+import com.example.recipeapp.domain.model.Recipe
+import com.example.recipeapp.domain.repository.RecipeRepository
 import com.example.recipeapp.domain.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipeDetailViewModel @Inject constructor(
-    private val repository: RecipeRepositoryImpl,
+    private val repository: RecipeRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -105,7 +108,7 @@ class RecipeDetailViewModel @Inject constructor(
         getSimilarRecipe(recipeId)
     }
 
-    fun insertRecipe(recipe: RecipeResult) {
+    fun insertRecipe(recipe: Recipe) {
         viewModelScope.launch {
             repository.insertRecipe(recipe)
         }

@@ -88,6 +88,9 @@ data class RecipeDto(
     @SerializedName("promotion")
     @Expose
     val promotion: String? = null,
+    @SerializedName("recipes")
+    @Expose
+    val recipes: List<RecipeDto>? = null,
     @SerializedName("renditions")
     @Expose
     val renditions: List<RenditionDto>? = null,
@@ -124,7 +127,7 @@ data class RecipeDto(
     @SerializedName("thumbnail_url")
     @Expose
     val thumbnail_url: String? = null,
-    @SerializedName("tips_and_rating_enabled")
+    @SerializedName("tips_and_ratings_enabled")
     @Expose
     val tips_and_ratings_enabled: Boolean? = null,
     @SerializedName("topics")

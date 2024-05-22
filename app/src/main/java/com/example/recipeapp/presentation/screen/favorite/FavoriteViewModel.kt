@@ -2,21 +2,20 @@ package com.example.recipeapp.presentation.screen.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipeapp.data.repository.RecipeRepositoryImpl
-import com.example.recipeapp.domain.model.RecipeResult
+import com.example.recipeapp.domain.model.Recipe
+import com.example.recipeapp.domain.repository.RecipeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val repository: RecipeRepositoryImpl
+    private val repository: RecipeRepository
 ): ViewModel() {
-    private val _uiState = MutableStateFlow<List<RecipeResult>>(emptyList())
+    private val _uiState = MutableStateFlow<List<Recipe>>(emptyList())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -31,7 +30,7 @@ class FavoriteViewModel @Inject constructor(
         }
     }
 
-    fun insertRecipe(recipe: RecipeResult) {
+    fun insertRecipe(recipe: Recipe) {
         viewModelScope.launch {
             repository.insertRecipe(recipe)
         }

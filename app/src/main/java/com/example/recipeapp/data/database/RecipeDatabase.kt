@@ -3,10 +3,10 @@ package com.example.recipeapp.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.recipeapp.data.database.dao.RecipeDao
-import com.example.recipeapp.data.database.entity.RecipeResultEntity
+import com.example.recipeapp.data.database.entity.RecipeEntity
 
 @Database(
-    entities = [RecipeResultEntity::class],
+    entities = [RecipeEntity::class],
     version = 1,
     exportSchema = false
 )

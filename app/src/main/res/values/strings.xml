@@ -4,6 +4,7 @@
     <string name="home_screen">Home</string>
     <string name="search_screen">Search</string>
     <string name="favorite_screen">Favorite</string>
+    <string name="profile_screen">Profile</string>
 
     <string name="no_connection">Hmm… it looks like you\'re offline.</string>
     <string name="serving">serving</string>
@@ -14,4 +15,19 @@
     <string name="preparation_label">Preparation</string>
 
     <string name="empty_saved_recipe">Like recipes to save them for later. We\'ll organize them into cookbooks for you!</string>
+
+    <string name="calories_label">Calories</string>
+    <string name="carbohydrates_label">Carbohydrates</string>
+    <string name="fat_label">Fat</string>
+    <string name="fiber_label">Fiber</string>
+    <string name="protein_label">Protein</string>
+    <string name="sugar_label">Sugar</string>
+
+    <string name="sign_in_with_google_label">Continue with Google</string>
+    <string name="sign_in_with_facebook_label">Continue with Facebook</string>
+    <string name="sign_in_with_apple_label">Continue with Apple</string>
+    <string name="sign_in_label">Sign In</string>
+    <string name="sign_up_label">Sign Up</string>
+
+    <string name="start_screen_label">Welcome to Yummy</string>
 </resources>

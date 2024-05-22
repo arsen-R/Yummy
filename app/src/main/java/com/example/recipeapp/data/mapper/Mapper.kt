@@ -1,9 +1,9 @@
 package com.example.recipeapp.data.mapper
 
-import com.example.recipeapp.data.database.entity.RecipeResultEntity
+import com.example.recipeapp.data.database.entity.RecipeEntity
 import com.example.recipeapp.data.network.dto.*
 import com.example.recipeapp.domain.model.*
-import com.example.recipeapp.domain.model.Unit
+import com.example.recipeapp.domain.model.Units
 
 
 fun CompilationDto.toCompilation(): Compilation {
@@ -69,8 +69,8 @@ fun MeasurementDto.toMeasurement(): Measurement {
     )
 }
 
-fun UnitDto.toUnit(): Unit {
-    return Unit(
+fun UnitDto.toUnit(): Units {
+    return Units(
         abbreviation = this.abbreviation,
         display_plural = this.display_plural,
         display_singular = this.display_singular,
@@ -186,66 +186,10 @@ fun RecipeDto.toRecipe(): Recipe {
     )
 }
 
-fun RecipeResultDto.toRecipeResult(): RecipeResult {
-    return RecipeResult(
-        approved_at = this.approved_at,
-        aspect_ratio = this.aspect_ratio,
-        beauty_url = this.beauty_url,
-        buzz_id = this.buzz_id,
-        brand = this.brand?.toBrand(),
-        canonical_id = this.canonical_id,
-        compilations = this.compilations?.map { it.toCompilation() },
-        cook_time_minutes = this.cook_time_minutes,
-        country = this.country,
-        created_at = this.created_at,
-        credits = this.credits?.map { it.toCredit() },
-        description = this.description,
-        draft_status = this.draft_status,
-        id = this.id,
-        inspired_by_url = this.inspired_by_url,
-        instructions = this.instructions?.map { it.toInstruction() },
-        is_one_top = this.is_one_top,
-        is_shoppable = this.is_shoppable,
-        keywords = this.keywords,
-        language = this.language,
-        name = this.name,
-        num_servings = this.num_servings,
-        nutrition = this.nutrition?.toNutrition(),
-        nutrition_visibility = this.nutrition_visibility,
-        original_video_url = this.original_video_url,
-        prep_time_minutes = this.prep_time_minutes,
-        price = this.price?.toPrice(),
-        promotion = this.promotion,
-        recipes = this.recipes?.map { it.toRecipe() },
-        renditions = this.renditions?.map { it.toRendition() },
-        sections = this.sections?.map { it.toSection() },
-        seo_path = this.seo_path,
-        seo_title = this.seo_title,
-        servings_noun_plural = this.servings_noun_plural,
-        servings_noun_singular = this.servings_noun_singular,
-        show = this.show?.toShow(),
-        show_id = this.show_id,
-        slug = this.slug,
-        tags = this.tags?.map { it.toTag() },
-        thumbnail_alt_text = this.thumbnail_alt_text,
-        thumbnail_url = this.thumbnail_url,
-        tips_and_ratings_enabled = this.tips_and_ratings_enabled,
-        topics = this.topics?.map { it.toTopic() },
-        total_time_minutes = this.total_time_minutes,
-        total_time_tier = this.total_time_tier?.toTotalTimeTier(),
-        updated_at = this.updated_at,
-        user_ratings = this.user_ratings?.toUserRatings(),
-        video_ad_content = this.video_ad_content,
-        video_id = this.video_id,
-        video_url = this.video_url,
-        yields = this.yields,
-    )
-}
-
 fun RecipeListDto.toRecipeList(): RecipeList {
     return RecipeList(
         count = this.count,
-        results = this.results?.map { it?.toRecipeResult() }
+        results = this.results?.map { it?.toRecipe() }
     )
 }
 
@@ -317,8 +261,8 @@ fun BrandDto.toBrand(): Brand {
 }
 
 
-fun RecipeResultEntity.toRecipeResult(): RecipeResult {
-    return RecipeResult(
+fun RecipeEntity.toRecipe(): Recipe {
+    return Recipe(
         approved_at = this.approved_at,
         aspect_ratio = this.aspect_ratio,
         beauty_url = this.beauty_url,
@@ -373,8 +317,8 @@ fun RecipeResultEntity.toRecipeResult(): RecipeResult {
     )
 }
 
-fun RecipeResult.toRecipeResultEntity(): RecipeResultEntity {
-    return RecipeResultEntity(
+fun Recipe.toRecipeEntity(): RecipeEntity {
+    return RecipeEntity(
         approved_at = this.approved_at,
         aspect_ratio = this.aspect_ratio,
         beauty_url = this.beauty_url,
