@@ -2,6 +2,7 @@ package com.example.recipeapp.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(tableName = "recipe_result_table")
 data class RecipeEntity(
@@ -57,4 +58,5 @@ data class RecipeEntity(
     val video_id: Int? = null,
     val video_url: String? = null,
     val yields: String? = null,
+    //val addedRecipe: Date = Date()
 )

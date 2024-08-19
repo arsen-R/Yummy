@@ -5,6 +5,7 @@
     <string name="search_screen">Search</string>
     <string name="favorite_screen">Favorite</string>
     <string name="profile_screen">Profile</string>
+    <string name="start_screen">Start</string>
 
     <string name="no_connection">Hmm… it looks like you\'re offline.</string>
     <string name="serving">serving</string>
@@ -30,4 +31,16 @@
     <string name="sign_up_label">Sign Up</string>
 
     <string name="start_screen_label">Welcome to Yummy</string>
+
+    <string name="web_client_id">873979809204-a9rglmu8vm5ht2i7f40ci2occacq2vfl.apps.googleusercontent.com</string>
+
+    <string name="create_account_label">Create your account</string>
+    <string name="login_account_label">Sign in with email</string>
+    <string name="sign_up_terms_of_service_label">By signing up, you agree to our Terms of Service and acknowledge that our Privacy Policy applies to you.</string>
+    <string name="sign_in_terms_of_service_label">By signing in, you agree to our Terms of Service and acknowledge that our Privacy Policy applies to you.</string>
+
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+
+
 </resources>

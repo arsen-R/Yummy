@@ -1,5 +1,6 @@
 package com.example.recipeapp.presentation.screen.recipe
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,8 +34,8 @@ import coil.transform.RoundedCornersTransformation
 import com.example.recipeapp.R
 import com.example.recipeapp.domain.model.Nutrition
 import com.example.recipeapp.domain.model.Recipe
-import com.example.recipeapp.domain.model.RecipeList
-import com.example.recipeapp.presentation.component.DetailTopBar
+import com.example.recipeapp.domain.model.RecipeResult
+import com.example.recipeapp.presentation.component.TopAppBarWithArrow
 import com.example.recipeapp.presentation.component.ErrorMessage
 import com.example.recipeapp.presentation.component.IngredientItemListHeader
 import com.example.recipeapp.presentation.component.InstructionListItem
@@ -43,21 +44,44 @@ import com.example.recipeapp.presentation.component.NutritionInfoBody
 import com.example.recipeapp.presentation.component.RecipeItem
 
 @Composable
-fun RecipeDetailScreen(
+internal fun RecipeDetailScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
-    val recipeDetail = viewModel.uiState.collectAsStateWithLifecycle().value
+    Log.d("ScreenNavStateLog", "Navigate to DetailScreen")
 
+    val recipeDetail = viewModel.uiState.collectAsStateWithLifecycle().value
+    RecipeDetailScreen(
+        modifier = modifier,
+        navController = navController,
+        recipeDetail = recipeDetail,
+        onRecipeSaved = viewModel::isRecipeAdded,
+        onSaveRecipe = viewModel::insertRecipe,
+        onRemoveRecipe = viewModel::removeRecipe,
+        onFetchRecipeDetails = viewModel::fetchRecipeDetails
+    )
+
+}
+
+@Composable
+fun RecipeDetailScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    recipeDetail: RecipeDetailUiState,
+    onRecipeSaved: (recipeId: Int) -> Boolean,
+    onSaveRecipe: (recipe: Recipe) -> Unit,
+    onRemoveRecipe: (recipeId: Int) -> Unit,
+    onFetchRecipeDetails: () -> Unit
+) {
     Scaffold(
         topBar = {
-            DetailTopBar(navController = navController)
+            TopAppBarWithArrow(navController = navController)
         },
         content = {
             when {
                 recipeDetail.isLoading -> {
-                    LoadingProgressBar()
+                    LoadingProgressBar(modifier = modifier.padding(it))
                 }
 
                 recipeDetail.recipe != null -> {
@@ -66,17 +90,18 @@ fun RecipeDetailScreen(
                         recipe = recipeDetail.recipe,
                         similarRecipe = recipeDetail.similarRecipe,
                         modifier = modifier.padding(it),
-                        onRecipeSaved = viewModel::isRecipeAdded,
-                        onSaveRecipe = viewModel::insertRecipe,
-                        onRemoveRecipe = viewModel::removeRecipe
+                        onRecipeSaved = onRecipeSaved,
+                        onSaveRecipe = onSaveRecipe,
+                        onRemoveRecipe = onRemoveRecipe
                     )
                 }
 
                 recipeDetail.throwable != null -> {
                     ErrorMessage(
+                        modifier = modifier.padding(it),
                         message = stringResource(id = R.string.no_connection),
                         onRetryClick = {
-                            viewModel.fetchRecipeDetails()
+                            onFetchRecipeDetails()
                         }
                     )
                 }
@@ -90,7 +115,7 @@ fun RecipeDetail(
     modifier: Modifier = Modifier,
     navController: NavController,
     recipe: Recipe? = null,
-    similarRecipe: RecipeList? = null,
+    similarRecipe: RecipeResult? = null,
     onRecipeSaved: (recipeId: Int) -> Boolean,
     onSaveRecipe: (recipe: Recipe) -> Unit,
     onRemoveRecipe: (recipeId: Int) -> Unit
@@ -238,7 +263,7 @@ fun RecipeDetailScreenPreview() {
     RecipeDetail(
         navController = navController,
         recipe = recipeResult,
-        similarRecipe = RecipeList(results = listOf(recipeResult)),
+        similarRecipe = RecipeResult(results = listOf(recipeResult)),
         onRemoveRecipe = {},
         onSaveRecipe = {},
         onRecipeSaved = { false })

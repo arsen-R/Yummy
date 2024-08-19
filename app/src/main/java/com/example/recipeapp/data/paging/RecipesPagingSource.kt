@@ -24,7 +24,7 @@ class RecipesPagingSource(
         return try {
             val pageNumber = params.key ?: 0
             val response = api.getListRecipes(from = pageNumber)
-            Log.d("RPS", "$pageNumber")
+            Log.d(RecipesPagingSource::class.simpleName, "$pageNumber")
             if (response.isSuccessful) {
                 val recipes = response.body()?.results?.map { it?.toRecipe()!! } ?: emptyList()
                 val prevKey = if (pageNumber == 0) null else pageNumber - 40

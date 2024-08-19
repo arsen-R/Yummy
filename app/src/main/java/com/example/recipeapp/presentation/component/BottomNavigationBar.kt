@@ -6,6 +6,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -17,21 +18,28 @@ import com.example.recipeapp.presentation.navigation.Screen
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
-fun BottomNavigationBar(navController: NavController, bottomBarState: MutableState<Boolean>) {
+fun BottomNavigationBar(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+) {
     val items = listOf(
         Screen.Home,
         Screen.Search,
         Screen.Favorite,
         Screen.Profile
     )
+    val showBottomBar = navController
+        .currentBackStackEntryAsState().value?.destination?.route in items.map { it.route }
     AnimatedVisibility(
-        visible = bottomBarState.value,
+        visible = showBottomBar,
         enter = slideInVertically(initialOffsetY = { it }),
-        exit = slideOutVertically(targetOffsetY = { it })
+        exit = slideOutVertically(targetOffsetY = { it }),
+        modifier = modifier
     ) {
         BottomNavigation(
             backgroundColor = MaterialTheme.colors.primary,
-            contentColor = Color.Black
+            contentColor = Color.Black,
+            modifier = modifier
         ) {
             items.forEach { item ->
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -72,8 +80,6 @@ fun BottomNavigationBar(navController: NavController, bottomBarState: MutableSta
 fun BottomNavigationBarPreview() {
     val navController = rememberNavController()
     RecipeAppTheme {
-        BottomNavigationBar(navController = navController, remember {
-            mutableStateOf(true)
-        })
+        BottomNavigationBar(navController = navController)
     }
 } 

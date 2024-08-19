@@ -16,35 +16,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.recipeapp.R
+import com.example.recipeapp.presentation.navigation.Screen
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
 fun TopBar(
     modifier: Modifier = Modifier,
     title: String,
-    toolbarState: Boolean
 ) {
-    AnimatedVisibility(
-        visible = toolbarState,
-        enter = slideInVertically(initialOffsetY = { -it }),
-        exit = slideOutVertically(targetOffsetY = { -it })
-    ) {
-        TopAppBar(
-            modifier = modifier.fillMaxWidth(),
-            title = {
-                Text(
-                    text = title,
-                    fontWeight = FontWeight.Bold,
-                    modifier = modifier.fillMaxWidth(),
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            },
-            backgroundColor = MaterialTheme.colors.primary,
-        )
-    }
+    TopAppBar(
+        modifier = modifier.fillMaxWidth(),
+        title = {
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                modifier = modifier.fillMaxWidth(),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onPrimary
+            )
+        },
+        backgroundColor = MaterialTheme.colors.primary,
+    )
 }
 
 @Preview(name = "Light mode")
@@ -55,6 +50,9 @@ fun TopBar(
 @Composable
 fun TopBarPreview() {
     RecipeAppTheme {
-        TopBar(toolbarState = true, title = stringResource(id = R.string.app_name))
+        TopBar(
+//            toolbarState = true,
+            title = stringResource(id = R.string.app_name)
+        )
     }
 }

@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 import com.example.recipeapp.R
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchAppBar(
     query: String,
@@ -59,7 +58,7 @@ fun SearchAppBar(
             keyboardActions = KeyboardActions(
                 onDone = {
                     onSearchRecipe(query)
-                    keyboardController?.hide() // another way to close keyboard
+                    keyboardController?.hide()
                 },
             ),
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search Icon") },

@@ -10,6 +10,7 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -21,8 +22,7 @@ import com.example.recipeapp.ui.theme.RecipeAppTheme
 @Composable
 fun SignUpButton(
     modifier: Modifier = Modifier,
-    onSignUp: () -> Unit,
-    signUpTitle: String
+    onSignUp: () -> Unit
 ) {
     OutlinedButton(
         onClick = { onSignUp() },
@@ -30,12 +30,13 @@ fun SignUpButton(
             .padding(horizontal = 15.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(50f),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
     ) {
         Text(
-            text = signUpTitle,
+            text = stringResource(id = R.string.sign_up_label),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.onBackground
+            color = Color.Black
         )
     }
 }
@@ -53,8 +54,7 @@ fun SignUpButton(
 fun SignUpButtonPreview() {
     RecipeAppTheme {
         SignUpButton(
-            onSignUp = { /*TODO*/ },
-            signUpTitle = stringResource(id = R.string.sign_up_label)
+            onSignUp = { /*TODO*/ }
         )
     }
 }

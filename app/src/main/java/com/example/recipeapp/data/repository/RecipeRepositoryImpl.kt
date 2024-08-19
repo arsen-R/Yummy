@@ -1,18 +1,19 @@
 package com.example.recipeapp.data.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.recipeapp.data.database.dao.RecipeDao
 import com.example.recipeapp.data.mapper.toRecipe
 import com.example.recipeapp.data.mapper.toRecipeEntity
-import com.example.recipeapp.data.mapper.toRecipeList
+import com.example.recipeapp.data.mapper.toRecipeResult
 import com.example.recipeapp.data.network.RecipeApi
 import com.example.recipeapp.data.paging.RecipesPagingSource
 import com.example.recipeapp.data.paging.SearchRecipePagingSource
 import com.example.recipeapp.data.util.Resources
 import com.example.recipeapp.domain.model.Recipe
-import com.example.recipeapp.domain.model.RecipeList
+import com.example.recipeapp.domain.model.RecipeResult
 import com.example.recipeapp.domain.repository.RecipeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -32,28 +33,31 @@ class RecipeRepositoryImpl @Inject constructor(
             emit(Resources.Loading())
             delay(1500L)
             val result = recipeApi.getRecipeDetail(recipeId).body()
+            Log.d(RecipeRepositoryImpl::class.simpleName, "getRecipeDetail: $result")
             emit(Resources.Success(result?.toRecipe()))
         }.catch { exception ->
             emit(Resources.Error(exception = exception))
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun getSimilarRecipes(recipeId: Int): Flow<Resources<RecipeList>> {
+    override suspend fun getSimilarRecipes(recipeId: Int): Flow<Resources<RecipeResult>> {
         return flow {
             emit(Resources.Loading())
             delay(1500L)
             val result = recipeApi.getSimilarRecipes(recipeId = recipeId).body()
-            emit(Resources.Success(result?.toRecipeList()))
+            Log.d(RecipeRepositoryImpl::class.simpleName, "getSimilarRecipes: $result")
+            emit(Resources.Success(result?.toRecipeResult()))
         }.catch { exception ->
             emit(Resources.Error(exception = exception))
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun searchRecipe(query: String): Flow<Resources<RecipeList>> {
+    override suspend fun searchRecipe(query: String): Flow<Resources<RecipeResult>> {
         return flow {
             emit(Resources.Loading())
             val result = recipeApi.getSearchRecipe(query).body()
-            emit(Resources.Success(result?.toRecipeList()))
+            Log.d(RecipeRepositoryImpl::class.simpleName, "searchRecipe: $result")
+            emit(Resources.Success(result?.toRecipeResult()))
         }.catch {exception ->
             emit(Resources.Error(exception))
         }.flowOn(Dispatchers.IO)

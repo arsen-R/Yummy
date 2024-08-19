@@ -3,15 +3,15 @@ package com.example.recipeapp.domain.repository
 import androidx.paging.PagingData
 import com.example.recipeapp.data.util.Resources
 import com.example.recipeapp.domain.model.Recipe
-import com.example.recipeapp.domain.model.RecipeList
+import com.example.recipeapp.domain.model.RecipeResult
 import kotlinx.coroutines.flow.Flow
 
 interface RecipeRepository {
     suspend fun getRecipeDetail(recipeId: Int): Flow<Resources<Recipe>>
 
-    suspend fun getSimilarRecipes(recipeId: Int): Flow<Resources<RecipeList>>
+    suspend fun getSimilarRecipes(recipeId: Int): Flow<Resources<RecipeResult>>
 
-    suspend fun searchRecipe(query: String): Flow<Resources<RecipeList>>
+    suspend fun searchRecipe(query: String): Flow<Resources<RecipeResult>>
     fun getAllSavedRecipes(): Flow<List<Recipe>>
 
     suspend fun insertRecipe(recipeResult: Recipe)

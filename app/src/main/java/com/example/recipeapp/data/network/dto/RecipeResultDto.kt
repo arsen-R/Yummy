@@ -3,7 +3,7 @@ package com.example.recipeapp.data.network.dto
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class RecipeListDto(
+data class RecipeResultDto(
     @SerializedName("count")
     @Expose
     val count: Int?,

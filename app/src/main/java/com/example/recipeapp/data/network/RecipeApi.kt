@@ -1,7 +1,7 @@
 package com.example.recipeapp.data.network
 
 import com.example.recipeapp.data.network.dto.RecipeDto
-import com.example.recipeapp.data.network.dto.RecipeListDto
+import com.example.recipeapp.data.network.dto.RecipeResultDto
 import com.example.recipeapp.domain.util.Constants
 import retrofit2.Response
 import retrofit2.http.GET
@@ -12,7 +12,7 @@ interface RecipeApi {
     suspend fun getListRecipes(
         @Query("from") from: Int = 0,
         @Query("size") size: Int = Constants.RECIPE_LIST_SIZE
-    ): Response<RecipeListDto>
+    ): Response<RecipeResultDto>
 
     @GET("/recipes/get-more-info")
     suspend fun getRecipeDetail(
@@ -22,12 +22,12 @@ interface RecipeApi {
     @GET("/recipes/list-similarities")
     suspend fun getSimilarRecipes(
         @Query("recipe_id") recipeId: Int,
-    ): Response<RecipeListDto>
+    ): Response<RecipeResultDto>
 
     @GET("/recipes/list")
     suspend fun getSearchRecipe(
         @Query("q") query: String,
         @Query("from") from: Int = 0,
         @Query("size") size: Int = Constants.RECIPE_LIST_SIZE
-    ): Response<RecipeListDto>
+    ): Response<RecipeResultDto>
 }

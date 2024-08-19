@@ -1,5 +1,6 @@
 package com.example.recipeapp.data.paging
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.recipeapp.data.mapper.toRecipe
@@ -20,12 +21,14 @@ class SearchRecipePagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Recipe> {
         return try {
-            val paramPage = params.key ?: 0
-            val response = api.getSearchRecipe(query = query, from = paramPage)
+            val pageNumber = params.key ?: 0
+            val response = api.getSearchRecipe(query = query, from = pageNumber)
+            Log.d(SearchRecipePagingSource::class.simpleName, "$pageNumber")
+
             if (response.isSuccessful) {
                 val recipes = response.body()?.results?.map { it?.toRecipe()!! } ?: emptyList()
-                val prevKey = if (paramPage == 0) null else paramPage - 40
-                val nextKey = if (recipes.isEmpty()) null else paramPage + 40
+                val prevKey = if (pageNumber == 0) null else pageNumber - 40
+                val nextKey = if (recipes.isEmpty()) null else pageNumber + 40
                 LoadResult.Page(
                     data = recipes,
                     prevKey = prevKey,

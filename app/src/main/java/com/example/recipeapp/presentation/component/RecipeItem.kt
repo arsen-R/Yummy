@@ -23,6 +23,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.recipeapp.domain.model.Recipe
 import com.example.recipeapp.presentation.navigation.Screen
+import com.example.recipeapp.presentation.navigation.navigateToRecipeDetail
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -40,7 +41,7 @@ fun RecipeItem(
             .size(170.dp),
         shape = RoundedCornerShape(8.dp),
         onClick = {
-            navController.navigate(route = Screen.RecipeDetail.passId(recipeResult?.id!!))
+            navController.navigateToRecipeDetail(recipeResult?.id!!)
         }
     ) {
         Box(

@@ -4,6 +4,7 @@ import com.example.recipeapp.data.database.entity.RecipeEntity
 import com.example.recipeapp.data.network.dto.*
 import com.example.recipeapp.domain.model.*
 import com.example.recipeapp.domain.model.Units
+import com.google.firebase.auth.FirebaseUser
 
 
 fun CompilationDto.toCompilation(): Compilation {
@@ -186,8 +187,8 @@ fun RecipeDto.toRecipe(): Recipe {
     )
 }
 
-fun RecipeListDto.toRecipeList(): RecipeList {
-    return RecipeList(
+fun RecipeResultDto.toRecipeResult(): RecipeResult {
+    return RecipeResult(
         count = this.count,
         results = this.results?.map { it?.toRecipe() }
     )
@@ -377,5 +378,12 @@ fun TagsListDto.toTagsList(): TagsList {
     return TagsList(
         count = this.count,
         results = this.results
+    )
+}
+
+fun FirebaseUser.toUser(): User {
+    return User(
+        uid = this.uid,
+        email = this.email
     )
 }

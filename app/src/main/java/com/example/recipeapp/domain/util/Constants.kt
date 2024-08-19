@@ -7,4 +7,10 @@ object Constants {
     const val DETAIL_ARGUMENT_KEY = "recipeId"
 
     const val DATABASE_NAME = "recipe.db"
+
+    const val SIGN_IN_REQUEST = "SIGN_IN_REQUEST"
+    const val SIGN_UP_REQUEST = "SIGN_UP_REQUEST"
+
+    const val EMPTY_STRING = ""
+    const val USER_PREFERENCES = "user_preferences"
 }

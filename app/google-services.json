@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1018115611464",
+    "project_id": "yummy-9287b",
+    "storage_bucket": "yummy-9287b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018115611464:android:146c870113ef1aca61f17d",
+        "android_client_info": {
+          "package_name": "com.example.recipeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_dfrPwtSvz_FGRfGssYh1aJ8_gTtwxoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
