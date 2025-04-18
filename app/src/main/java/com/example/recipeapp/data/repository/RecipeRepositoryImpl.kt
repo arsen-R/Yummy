@@ -23,7 +23,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class RecipeRepositoryImpl @Inject constructor(
     private val recipeApi: RecipeApi,
     private val recipeDao: RecipeDao

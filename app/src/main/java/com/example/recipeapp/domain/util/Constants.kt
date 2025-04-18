@@ -1,5 +1,7 @@
 package com.example.recipeapp.domain.util
 
+import androidx.datastore.preferences.core.intPreferencesKey
+
 object Constants {
     const val HEADER_API_KEY = "X-RapidAPI-Key"
     const val HEADER_API_HOST = "X-RapidAPI-Host"
@@ -13,4 +15,6 @@ object Constants {
 
     const val EMPTY_STRING = ""
     const val USER_PREFERENCES = "user_preferences"
+
+    val APP_THEME_PREFERENCES = "APP_THEME_PREFERENCES"
 }

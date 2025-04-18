@@ -1,8 +1,6 @@
 package com.example.recipeapp.data.repository
 
 import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import com.example.recipeapp.data.mapper.toUser
 import com.example.recipeapp.data.util.Resources
 import com.example.recipeapp.domain.repository.AuthRepository
@@ -12,6 +10,7 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthEmailException
 import com.google.firebase.auth.FirebaseAuthException
@@ -88,6 +87,8 @@ class AuthRepositoryImpl @Inject constructor(
         val authStateListener = FirebaseAuth.AuthStateListener { listener ->
             trySend(listener.currentUser == null)
             Log.i(AuthRepositoryImpl::class.simpleName, "User: ${listener.currentUser == (true ?: "Not authenticated")}")
+            Log.i(AuthRepositoryImpl::class.simpleName, "Provider: ${auth.currentUser?.providerData?.get(1)?.providerId}")
+            Log.i(AuthRepositoryImpl::class.simpleName, "Provider is : ${auth.currentUser?.providerData?.get(1)?.providerId == EmailAuthProvider.PROVIDER_ID}")
         }
         auth.addAuthStateListener(authStateListener)
         awaitClose {
@@ -136,6 +137,7 @@ class AuthRepositoryImpl @Inject constructor(
         return flow {
             emit(Resources.Loading())
             try {
+                Log.d(AuthRepositoryImpl::class.simpleName, "")
                 val results = auth.signInWithEmailAndPassword(email, password).await()
                 emit(Resources.Success(results.user))
             } catch (e: FirebaseAuthException) {

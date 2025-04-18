@@ -1,4 +1,4 @@
-package com.example.recipeapp.presentation.screen.recipe
+package com.example.recipeapp.presentation.screen.recipe_detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.data.util.Resources
 import com.example.recipeapp.domain.model.Recipe
 import com.example.recipeapp.domain.repository.RecipeRepository
-import com.example.recipeapp.domain.util.Constants
 import com.example.recipeapp.presentation.navigation.RecipeArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="theme_label">
+        <item>@string/system_default_theme_label</item>
+        <item>@string/light_theme_label</item>
+        <item>@string/dark_theme_label</item>
+    </string-array>
+    <string-array name="theme_entries">
+        <item>system_default_entry</item>
+        <item>light_theme_entry</item>
+        <item>dark_theme_entry</item>
+    </string-array>
+    
+    <string-array name="measurement_unit_label">
+        <item>@string/imperial_unit_label</item>
+        <item>@string/metric_imperial_unit_label</item>
+    </string-array>
+    <string-array name="measurement_unit_entries">
+        <item>imperial_entry</item>
+        <item>metric_imperial_entry</item>
+    </string-array>
+    
+    <string-array name="autoplay_label">
+        <item>@string/never_label</item>
+        <item>@string/always_label</item>
+        <item>@string/only_wifi_label</item>
+    </string-array>
+    <string-array name="autoplay_entries">
+        <item>never_entry</item>
+        <item>always_entry</item>
+        <item>wifi_only_entry</item>
+    </string-array>
+</resources>

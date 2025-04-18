@@ -7,33 +7,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +33,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.recipeapp.R
+import com.example.recipeapp.presentation.component.MenuGroup
+import com.example.recipeapp.presentation.component.MenuGroupItem
+import com.example.recipeapp.presentation.component.SubtitleText
 import com.example.recipeapp.presentation.component.TopBar
+import com.example.recipeapp.presentation.navigation.navigateToAccountManagement
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
@@ -95,31 +91,56 @@ fun ProfileScreenBody(
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 ProfileInfo()
-                ProfileMenu(
+                MenuGroup(
                     modifier = modifier,
                     content = {
-                        ProfileSubMenu(onClick = { /*TODO*/ }, text = "Account management")
-                        ProfileSubMenu(onClick = { /*TODO*/ }, text = "Notifications")
-                        ProfileSubMenu(onClick = { /*TODO*/ }, text = "Privacy and data")
-                        ProfileSubMenu(onClick = { /*TODO*/ }, text = "Reports")
-                    }, subTitle = "Settings"
+                        MenuGroupItem(
+                            onClick = { navController.navigateToAccountManagement() },
+                            title = stringResource(id = R.string.account_management_label)
+                        )
+                        MenuGroupItem(
+                            onClick = { /*TODO*/ },
+                            title = stringResource(id = R.string.notification_label),
+
+                            )
+                        MenuGroupItem(
+                            onClick = { /*TODO*/ },
+                            title = stringResource(id = R.string.privacy_data_label)
+                        )
+                        MenuGroupItem(
+                            onClick = { /*TODO*/ },
+                            title = stringResource(id = R.string.reports_label)
+                        )
+                    }, subTitle = stringResource(id = R.string.settings_label)
                 )
 
-                ProfileMenu(
+                MenuGroup(
                     modifier = modifier,
                     content = {
-                        ProfileSubMenu(onClick = { /*TODO*/ }, text = "Help center")
-                        ProfileSubMenu(onClick = { /*TODO*/ }, text = "Term of service")
-                        ProfileSubMenu(onClick = { /*TODO*/ }, text = "Privacy policy")
-                        ProfileSubMenu(onClick = { /*TODO*/ }, text = "About")
-                    }, subTitle = "Support"
+                        MenuGroupItem(
+                            onClick = { /*TODO*/ },
+                            title = stringResource(id = R.string.help_center_label)
+                        )
+                        MenuGroupItem(
+                            onClick = { /*TODO*/ },
+                            title = stringResource(id = R.string.term_service_label)
+                        )
+                        MenuGroupItem(
+                            onClick = { /*TODO*/ },
+                            title = stringResource(id = R.string.privacy_policy_label)
+                        )
+                        MenuGroupItem(
+                            onClick = { /*TODO*/ },
+                            title = stringResource(id = R.string.about_label)
+                        )
+                    }, subTitle = stringResource(id = R.string.support_label)
                 )
-                ProfileMenu(
+                MenuGroup(
                     modifier = modifier,
                     content = {
-                        ProfileSubMenu(
+                        MenuGroupItem(
                             onClick = { onSignOutCurrentUser() },
-                            text = "Sign out",
+                            title = stringResource(id = R.string.sign_out_label),
                             trailingIcon = null
                         )
                     },
@@ -127,62 +148,6 @@ fun ProfileScreenBody(
                 )
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun ProfileSubMenu(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    text: String,
-    trailingIcon: ImageVector? = Icons.AutoMirrored.Filled.KeyboardArrowRight
-) {
-    ListItem(
-        modifier = modifier.clickable { onClick() },
-        text = {
-            Text(
-                text = text,
-                style = TextStyle(
-                    color = MaterialTheme.colors.onBackground,
-                    fontSize = 16.sp
-                )
-            )
-        },
-        trailing = {
-            trailingIcon?.let { icon ->
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.onSurface
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun ProfileMenu(
-    modifier: Modifier = Modifier,
-    subTitle: String?,
-    content: @Composable ColumnScope.() -> Unit,
-    ) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        subTitle?.let { subtitle ->
-            Text(
-                text = subtitle,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.onSecondary,
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Start,
-                modifier = modifier.padding(start = 15.dp)
-            )
-        }
-        Column(modifier = modifier, content = content)
     }
 }
 
@@ -195,7 +160,7 @@ fun ProfileInfo(
             .fillMaxWidth()
             .padding(10.dp)
             .background(color = MaterialTheme.colors.background)
-            .clickable {  },
+            .clickable { },
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {

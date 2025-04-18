@@ -15,11 +15,12 @@ import com.example.recipeapp.ui.theme.RecipeAppTheme
 @Composable
 fun TopAppBarWithArrow(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: @Composable (() -> Unit)? = null,
 ) {
     TopAppBar(
         modifier = modifier.fillMaxWidth(),
-        title = {},
+        title = title ?: {},
         backgroundColor = MaterialTheme.colors.primary,
         navigationIcon = {
             IconButton(onClick = {

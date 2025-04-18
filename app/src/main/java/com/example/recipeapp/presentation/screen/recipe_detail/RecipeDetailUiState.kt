@@ -1,4 +1,4 @@
-package com.example.recipeapp.presentation.screen.recipe
+package com.example.recipeapp.presentation.screen.recipe_detail
 
 import com.example.recipeapp.domain.model.Recipe
 import com.example.recipeapp.domain.model.RecipeResult

@@ -8,6 +8,8 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.room.Room
 import com.example.recipeapp.BuildConfig
 import com.example.recipeapp.R
@@ -102,4 +104,11 @@ object AppModule {
             produceFile = { context.preferencesDataStoreFile(Constants.USER_PREFERENCES) }
         )
     }
+
+//    @Provides
+//    @Singleton
+//    fun provideVideoPlayer(app: Application): Player {
+//        return ExoPlayer.Builder(app)
+//            .build()
+//    }
 }

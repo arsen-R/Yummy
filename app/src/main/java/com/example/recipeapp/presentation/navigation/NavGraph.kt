@@ -4,20 +4,18 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.example.recipeapp.domain.util.Constants
+import com.example.recipeapp.presentation.screen.settings.account_management.AccountManagementScreen
 import com.example.recipeapp.presentation.screen.favorite.FavoriteScreen
 import com.example.recipeapp.presentation.screen.home.HomeScreen
-import com.example.recipeapp.presentation.screen.main.MainScreen
 import com.example.recipeapp.presentation.screen.profile.ProfileScreen
-import com.example.recipeapp.presentation.screen.recipe.RecipeDetailScreen
-import com.example.recipeapp.presentation.screen.recipe.RecipeDetailViewModel
+import com.example.recipeapp.presentation.screen.recipe_detail.RecipeDetailScreen
+import com.example.recipeapp.presentation.screen.recipe_detail.RecipeDetailViewModel
 import com.example.recipeapp.presentation.screen.search.SearchScreen
 import com.example.recipeapp.presentation.screen.signin.SignInScreen
 import com.example.recipeapp.presentation.screen.signup.SignUpScreen
@@ -64,6 +62,9 @@ fun NavGraph(
         composable(route = Screen.SignIn.route) {
             SignInScreen(navController = navHostController)
         }
+        composable(route = Screen.AccountManagement.route) {
+            AccountManagementScreen(navController = navHostController)
+        }
     }
 }
 
@@ -81,6 +82,10 @@ fun NavController.navigateToHome() {
 
 fun NavController.navigateToRecipeDetail(recipeId: Int) {
     this.navigate(route = Screen.RecipeDetail.passId(recipeId))
+}
+
+fun NavController.navigateToAccountManagement() {
+    this.navigate(route = Screen.AccountManagement.route)
 }
 
 internal class RecipeArgs(val recipeId: Int) {

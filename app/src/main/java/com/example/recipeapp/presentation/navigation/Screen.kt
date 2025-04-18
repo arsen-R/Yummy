@@ -28,4 +28,7 @@ sealed class Screen(
     ) {
         fun passId(recipeId: Int) = "recipe_detail_screen/$recipeId"
     }
+
+    data object AccountManagement :
+        Screen(R.string.account_management_label, "account_management", null)
 }

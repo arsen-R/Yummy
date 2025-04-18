@@ -14,7 +14,8 @@ private val DarkColorPalette = darkColors(
     primaryVariant = Purple700,
     surface = DarkCardBackground,
     onPrimary = Color.White,
-    onSecondary = Color(0xFF2C98F0)
+    onSecondary = Color.LightGray,
+    //background = Shark
 )
 
 @SuppressLint("ConflictingOnColor")
@@ -23,7 +24,7 @@ private val LightColorPalette = lightColors(
     primaryVariant = Purple700,
     surface = Color.White,
     onPrimary = Color.Black,
-    onSecondary = Color(0xFF2C98F0)
+    onSecondary = DoveGray
     /* Other default colors to override
     background = Color.White,
     surface = Color.White,
