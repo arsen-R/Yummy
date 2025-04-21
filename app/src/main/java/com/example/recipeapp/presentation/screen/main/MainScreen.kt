@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.recipeapp.presentation.component.BottomNavigationBar
 import com.example.recipeapp.presentation.navigation.NavGraph
-import com.example.recipeapp.presentation.navigation.Screen
+import com.example.recipeapp.presentation.navigation.HomeNavScreen
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
@@ -26,13 +26,6 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
         content = { paddingValues ->
             Box(modifier = Modifier.padding(paddingValues)) {
                 NavGraph(navHostController = navController)
-                val isCurrentUserLogOut = viewModel.isUserLogIn.collectAsState().value
-                if (isCurrentUserLogOut)
-                    navController.navigate(Screen.Start.route) {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
-                        }
-                    }
             }
         },
         bottomBar = {

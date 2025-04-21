@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -42,8 +41,6 @@ import com.example.recipeapp.presentation.component.LoadingProgressBar
 import com.example.recipeapp.presentation.component.LockScreenOrientation
 import com.example.recipeapp.presentation.component.PasswordOutlinedTextField
 import com.example.recipeapp.presentation.component.TopAppBarWithArrow
-import com.example.recipeapp.presentation.navigation.Screen
-import com.example.recipeapp.presentation.navigation.navigateToHome
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
@@ -197,7 +194,6 @@ fun SignUp(
         }
 
         is SignUpState.Success -> {
-            navController.navigateToHome()
         }
 
         is SignUpState.Error -> {

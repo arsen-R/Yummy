@@ -35,18 +35,18 @@ import androidx.navigation.compose.rememberNavController
 import com.example.recipeapp.R
 import com.example.recipeapp.presentation.component.MenuGroup
 import com.example.recipeapp.presentation.component.MenuGroupItem
-import com.example.recipeapp.presentation.component.SubtitleText
+import com.example.recipeapp.presentation.component.ProfileInfo
 import com.example.recipeapp.presentation.component.TopBar
 import com.example.recipeapp.presentation.navigation.navigateToAccountManagement
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
-internal fun ProfileScreen(
+internal fun SettingsScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    ProfileScreen(
+    SettingsScreen(
         modifier = modifier,
         navController = navController,
         onSignOutCurrentUser = viewModel::fetchSignOutCurrentUser
@@ -54,17 +54,17 @@ internal fun ProfileScreen(
 }
 
 @Composable
-fun ProfileScreen(
+fun SettingsScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     onSignOutCurrentUser: () -> Unit
 ) {
     Scaffold(
         topBar = {
-            TopBar(title = stringResource(id = R.string.profile_screen))
+            TopBar(title = stringResource(id = R.string.settings_label))
         }, content = {
             Box(modifier = modifier.padding(it)) {
-                ProfileScreenBody(
+                SettingScreenBody(
                     modifier = modifier,
                     onSignOutCurrentUser = onSignOutCurrentUser,
                     navController = navController
@@ -75,7 +75,7 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileScreenBody(
+fun SettingScreenBody(
     modifier: Modifier = Modifier,
     onSignOutCurrentUser: () -> Unit,
     navController: NavController
@@ -90,7 +90,6 @@ fun ProfileScreenBody(
                 modifier = modifier,
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                ProfileInfo()
                 MenuGroup(
                     modifier = modifier,
                     content = {
@@ -151,65 +150,6 @@ fun ProfileScreenBody(
     }
 }
 
-@Composable
-fun ProfileInfo(
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-            .background(color = MaterialTheme.colors.background)
-            .clickable { },
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Image(
-            imageVector = Icons.Default.AccountCircle,
-            contentDescription = "account_logo",
-            modifier = modifier.size(75.dp),
-            colorFilter = ColorFilter.tint(color = Color.Gray)
-        )
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            Text(
-                text = "Arsen",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.onBackground
-                )
-            )
-            Text(
-                text = "arsenr412@gmail.com",
-                style = TextStyle(
-                    color = MaterialTheme.colors.onBackground
-                )
-            )
-        }
-    }
-}
-
-@Preview(
-    name = "Light Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    showBackground = true
-)
-@Preview(
-    name = "Dark Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true
-
-)
-@Composable
-fun ProfilePreview() {
-    RecipeAppTheme {
-        ProfileInfo()
-    }
-}
-
 @Preview(
     name = "Light Mode Portrait",
     showBackground = true,
@@ -242,6 +182,6 @@ fun ProfilePreview() {
 @Composable
 fun ProfileScreenPreview() {
     RecipeAppTheme {
-        ProfileScreenBody(navController = rememberNavController(), onSignOutCurrentUser = {})
+        SettingScreenBody(navController = rememberNavController(), onSignOutCurrentUser = {})
     }
 }

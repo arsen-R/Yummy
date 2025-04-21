@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.recipeapp.presentation.navigation.Screen
+import com.example.recipeapp.presentation.navigation.HomeNavScreen
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 
 @Composable
@@ -23,10 +23,10 @@ fun BottomNavigationBar(
     navController: NavController,
 ) {
     val items = listOf(
-        Screen.Home,
-        Screen.Search,
-        Screen.Favorite,
-        Screen.Profile
+        HomeNavScreen.Home,
+        HomeNavScreen.Search,
+        HomeNavScreen.Favorite,
+        HomeNavScreen.Settings
     )
     val showBottomBar = navController
         .currentBackStackEntryAsState().value?.destination?.route in items.map { it.route }

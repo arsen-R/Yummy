@@ -47,8 +47,6 @@ import com.example.recipeapp.presentation.component.LockScreenOrientation
 import com.example.recipeapp.presentation.component.SignInButton
 import com.example.recipeapp.presentation.component.SignInButtonFromProvider
 import com.example.recipeapp.presentation.component.SignUpButton
-import com.example.recipeapp.presentation.navigation.Screen
-import com.example.recipeapp.presentation.navigation.navigateToHome
 import com.example.recipeapp.presentation.navigation.navigateToSignIn
 import com.example.recipeapp.presentation.navigation.navigateToSignUp
 import com.example.recipeapp.ui.theme.RecipeAppTheme
@@ -141,7 +139,6 @@ fun StartScreen(
         }
 
         is SignInWithGoogleState.Success -> {
-            navController.navigateToHome()
         }
 
         is SignInWithGoogleState.Error -> {

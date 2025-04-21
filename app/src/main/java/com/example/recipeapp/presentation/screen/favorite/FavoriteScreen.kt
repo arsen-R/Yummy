@@ -19,7 +19,6 @@ import com.example.recipeapp.domain.model.Recipe
 import com.example.recipeapp.presentation.component.EmptyScreen
 import com.example.recipeapp.presentation.component.RecipeItem
 import com.example.recipeapp.presentation.component.TopBar
-import com.example.recipeapp.presentation.navigation.Screen
 
 @Composable
 internal fun FavoriteScreen(

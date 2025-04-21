@@ -25,7 +25,7 @@ fun MenuGroup(
     subTitle: String? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(modifier = modifier.padding(vertical = 5.dp).fillMaxWidth()) {
+    Column(modifier = modifier.padding(top = 10.dp).fillMaxWidth()) {
         subTitle?.let { subtitle ->
             Text(
                 text = subtitle,

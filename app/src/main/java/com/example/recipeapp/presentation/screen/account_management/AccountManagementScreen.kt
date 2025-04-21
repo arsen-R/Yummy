@@ -1,4 +1,4 @@
-package com.example.recipeapp.presentation.screen.settings.account_management
+package com.example.recipeapp.presentation.screen.account_management
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -101,13 +101,6 @@ fun AccountManagementScreen(
                             SubtitleText(subtitleText = currentAppThemeLabel)
                         }
                     )
-//                    MenuGroupItem(
-//                        onClick = { /*TODO*/ },
-//                        title = stringResource(id = R.string.app_language_label),
-//                        subtitle = {
-//                            SubtitleText(subtitleText = "English")
-//                        }
-//                    )
                     MenuGroupItem(
                         onClick = { /*TODO*/ },
                         title = stringResource(id = R.string.measurement_system_label),

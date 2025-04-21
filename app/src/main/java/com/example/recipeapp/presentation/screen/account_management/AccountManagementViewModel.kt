@@ -1,4 +1,4 @@
-package com.example.recipeapp.presentation.screen.settings.account_management
+package com.example.recipeapp.presentation.screen.account_management
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

@@ -22,7 +22,6 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.recipeapp.domain.model.Recipe
-import com.example.recipeapp.presentation.navigation.Screen
 import com.example.recipeapp.presentation.navigation.navigateToRecipeDetail
 
 @OptIn(ExperimentalMaterialApi::class)
