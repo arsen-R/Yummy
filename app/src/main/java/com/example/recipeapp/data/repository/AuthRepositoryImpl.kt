@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuthEmailException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.snapshots
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -50,7 +51,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun oneTapSignInWithGoogle(): Flow<Resources<BeginSignInResult>> {
         return flow {
             try {
-                emit(Resources.Loading())
+                emit(Resources.Loading)
                 val signInResult = oneTapClient.beginSignIn(signInRequest).await()
                 emit(Resources.Success(signInResult))
             } catch (e: Exception) {
@@ -69,11 +70,11 @@ class AuthRepositoryImpl @Inject constructor(
     ): Flow<Resources<Boolean>> {
         return flow {
             try {
-                emit(Resources.Loading())
+                emit(Resources.Loading)
                 val authResult = auth.signInWithCredential(googleCredential).await()
                 val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
                 if (isNewUser) {
-                    addUserToRealTimeDatabase()
+                    //addUserToRealTimeDatabase()
                     Log.d(AuthRepositoryImpl::class.simpleName, "Data is added!")
                 }
                 emit(Resources.Success(true))
@@ -85,10 +86,10 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun getAuthState(viewModelScope: CoroutineScope) = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { listener ->
+            if (listener.currentUser != null) {
+                Log.i(AuthRepositoryImpl::class.simpleName, "User is logged!")
+            }
             trySend(listener.currentUser == null)
-            Log.i(AuthRepositoryImpl::class.simpleName, "User: ${listener.currentUser == (true ?: "Not authenticated")}")
-            Log.i(AuthRepositoryImpl::class.simpleName, "Provider: ${auth.currentUser?.providerData?.get(1)?.providerId}")
-            Log.i(AuthRepositoryImpl::class.simpleName, "Provider is : ${auth.currentUser?.providerData?.get(1)?.providerId == EmailAuthProvider.PROVIDER_ID}")
         }
         auth.addAuthStateListener(authStateListener)
         awaitClose {
@@ -100,33 +101,40 @@ class AuthRepositoryImpl @Inject constructor(
         auth.currentUser == null
     )
 
-    override suspend fun signUpUserByEmailAndPassword(
+    override fun signUpUserByEmailAndPassword(
         email: String,
         password: String
     ): Flow<Resources<FirebaseUser>> {
-        return flow {
-            emit(Resources.Loading())
+        return callbackFlow {
+            trySend(Resources.Loading)
             try {
-                val authResult = auth.createUserWithEmailAndPassword(email, password).await()
-                val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
-                if (isNewUser) {
-                    addUserToRealTimeDatabase()
-                    Log.d(AuthRepositoryImpl::class.simpleName, "Data is added!")
+                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        if (task.result.additionalUserInfo?.isNewUser == true) {
+                            addUserToRealTimeDatabase(onSuccess = {
+                                trySend(Resources.Success(task.result.user))
+                            }, onFailure = {
+                                trySend(Resources.Error(Exception("Firebase RealtimeDatabase is failed")))
+                            })
+                        } else {
+                            trySend(Resources.Error(Exception("This is exist")))
+                        }
+                    }
                 }
-                emit(Resources.Success(authResult.user))
             } catch (e: FirebaseAuthException) {
-                emit(Resources.Error(e))
+                trySend(Resources.Error(e))
             } catch (e: FirebaseAuthEmailException) {
-                emit(Resources.Error(e))
+                trySend(Resources.Error(e))
             } catch (e: FirebaseNetworkException) {
-                emit(Resources.Error(e))
+                trySend(Resources.Error(e))
             } catch (e: FirebaseTooManyRequestsException) {
-                emit(Resources.Error(e))
+                trySend(Resources.Error(e))
             } catch (e: IllegalArgumentException) {
-                emit(Resources.Error(e))
+                trySend(Resources.Error(e))
             } catch (e: Exception) {
-                emit(Resources.Error(e))
+                trySend(Resources.Error(e))
             }
+            awaitClose()
         }.flowOn(Dispatchers.IO)
     }
 
@@ -135,7 +143,7 @@ class AuthRepositoryImpl @Inject constructor(
         password: String
     ): Flow<Resources<FirebaseUser>> {
         return flow {
-            emit(Resources.Loading())
+            emit(Resources.Loading)
             try {
                 Log.d(AuthRepositoryImpl::class.simpleName, "")
                 val results = auth.signInWithEmailAndPassword(email, password).await()
@@ -156,12 +164,17 @@ class AuthRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    private suspend fun addUserToRealTimeDatabase() {
+    private fun addUserToRealTimeDatabase(onSuccess: () -> Unit, onFailure: () -> Unit) {
         auth.currentUser?.apply {
             database.getReference("users")
                 .child(uid)
-                .setValue(toUser())
-                .await()
+                .setValue(toUser()).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        onSuccess()
+                    }
+                }.addOnFailureListener {
+                    onFailure()
+                }
         }
     }
 

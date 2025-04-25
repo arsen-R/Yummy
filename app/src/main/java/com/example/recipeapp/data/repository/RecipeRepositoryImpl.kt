@@ -32,7 +32,7 @@ class RecipeRepositoryImpl @Inject constructor(
 ) : RecipeRepository {
     override suspend fun getRecipeDetail(recipeId: Int): Flow<Resources<Recipe>> {
         return flow {
-            emit(Resources.Loading())
+            emit(Resources.Loading)
             delay(1500L)
             val result = recipeApi.getRecipeDetail(recipeId).body()
             Log.d(RecipeRepositoryImpl::class.simpleName, "getRecipeDetail: $result")
@@ -44,7 +44,7 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun getSimilarRecipes(recipeId: Int): Flow<Resources<RecipeResult>> {
         return flow {
-            emit(Resources.Loading())
+            emit(Resources.Loading)
             delay(1500L)
             val result = recipeApi.getSimilarRecipes(recipeId = recipeId).body()
             Log.d(RecipeRepositoryImpl::class.simpleName, "getSimilarRecipes: $result")
@@ -56,7 +56,7 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun searchRecipe(query: String): Flow<Resources<RecipeResult>> {
         return flow {
-            emit(Resources.Loading())
+            emit(Resources.Loading)
             val result = recipeApi.getSearchRecipe(query).body()
             Log.d(RecipeRepositoryImpl::class.simpleName, "searchRecipe: $result")
             emit(Resources.Success(result?.toRecipeResult()))

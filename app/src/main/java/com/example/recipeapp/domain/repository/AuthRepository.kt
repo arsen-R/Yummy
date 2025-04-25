@@ -17,7 +17,7 @@ interface AuthRepository {
 
     fun getAuthState(viewModelScope: CoroutineScope): StateFlow<Boolean>
 
-    suspend fun signUpUserByEmailAndPassword(
+    fun signUpUserByEmailAndPassword(
         email: String,
         password: String
     ): Flow<Resources<FirebaseUser>>
