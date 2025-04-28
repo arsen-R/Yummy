@@ -99,7 +99,8 @@ dependencies {
     // Firebase
     implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
     implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
-    implementation "com.google.firebase:firebase-database:21.0.0"
+    implementation "com.google.firebase:firebase-database:$firebase_database_version"
+    implementation "com.google.firebase:firebase-firestore:$firebase_firestore_version"
     // Play Services Auth
     implementation "com.google.android.gms:play-services-auth:$play_services_auth_version"
     // Datastore

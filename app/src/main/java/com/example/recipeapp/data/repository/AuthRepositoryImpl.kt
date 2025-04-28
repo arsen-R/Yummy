@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.recipeapp.data.mapper.toUser
 import com.example.recipeapp.data.util.Resources
 import com.example.recipeapp.domain.repository.AuthRepository
+import com.example.recipeapp.domain.util.Constants
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.snapshots
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -40,6 +42,7 @@ class AuthRepositoryImpl @Inject constructor(
     @Named("SIGN_UP_REQUEST")
     private var signUpRequest: BeginSignInRequest,
     private val database: FirebaseDatabase,
+    private val firestore: FirebaseFirestore
 ) : AuthRepository {
 
     private val currentUser = auth.currentUser
@@ -111,7 +114,7 @@ class AuthRepositoryImpl @Inject constructor(
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         if (task.result.additionalUserInfo?.isNewUser == true) {
-                            addUserToRealTimeDatabase(onSuccess = {
+                            addUserToDatabase(onSuccess = {
                                 trySend(Resources.Success(task.result.user))
                             }, onFailure = {
                                 trySend(Resources.Error(Exception("Firebase RealtimeDatabase is failed")))
@@ -180,5 +183,25 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun singOutCurrentUser() {
         auth.signOut()
+    }
+
+    override fun addUserToDatabase(onSuccess: () -> Unit, onFailure: () -> Unit) {
+        auth.currentUser?.apply {
+            firestore.collection(Constants.USERS_COLLECTION_PATH)
+                .document(uid)
+                .set(toUser())
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        onSuccess()
+                        Log.i(
+                            AuthRepositoryImpl::class.simpleName,
+                            "User added to Firestore database"
+                        )
+                    }
+                }
+                .addOnFailureListener {
+                    onFailure()
+                }
+        }
     }
 }

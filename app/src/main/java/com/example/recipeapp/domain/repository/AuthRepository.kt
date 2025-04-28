@@ -28,4 +28,6 @@ interface AuthRepository {
     ): Flow<Resources<FirebaseUser>>
 
     fun singOutCurrentUser()
+
+    fun addUserToDatabase(onSuccess: () -> Unit, onFailure: () -> Unit)
 }

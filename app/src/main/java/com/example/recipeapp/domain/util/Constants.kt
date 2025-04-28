@@ -17,4 +17,6 @@ object Constants {
     const val USER_PREFERENCES = "user_preferences"
 
     val APP_THEME_PREFERENCES = "APP_THEME_PREFERENCES"
+
+    const val USERS_COLLECTION_PATH = "users"
 }
