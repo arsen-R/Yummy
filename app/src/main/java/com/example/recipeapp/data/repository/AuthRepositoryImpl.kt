@@ -1,24 +1,25 @@
 package com.example.recipeapp.data.repository
 
+import android.content.Context
 import android.util.Log
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
 import com.example.recipeapp.data.mapper.toUser
 import com.example.recipeapp.data.util.Resources
 import com.example.recipeapp.domain.repository.AuthRepository
 import com.example.recipeapp.domain.util.Constants
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.BeginSignInResult
-import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthEmailException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.snapshots
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -30,61 +31,22 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val oneTapClient: SignInClient,
-    @Named("SIGN_IN_REQUEST")
-    private var signInRequest: BeginSignInRequest,
-    @Named("SIGN_UP_REQUEST")
-    private var signUpRequest: BeginSignInRequest,
     private val database: FirebaseDatabase,
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val credentialRequest: GetCredentialRequest,
+    private val credentialManager: CredentialManager,
+    @ApplicationContext private val context: Context,
 ) : AuthRepository {
 
     private val currentUser = auth.currentUser
 
     override fun isCurrentUserAuthenticatedInFirebase(): Boolean {
         return auth.currentUser != null
-    }
-
-    override suspend fun oneTapSignInWithGoogle(): Flow<Resources<BeginSignInResult>> {
-        return flow {
-            try {
-                emit(Resources.Loading)
-                val signInResult = oneTapClient.beginSignIn(signInRequest).await()
-                emit(Resources.Success(signInResult))
-            } catch (e: Exception) {
-                try {
-                    val signUpResult = oneTapClient.beginSignIn(signUpRequest).await()
-                    emit(Resources.Success(signUpResult))
-                } catch (e: Exception) {
-                    emit(Resources.Error(e))
-                }
-            }
-        }.flowOn(Dispatchers.IO)
-    }
-
-    override suspend fun signInUserByGoogle(
-        googleCredential: AuthCredential
-    ): Flow<Resources<Boolean>> {
-        return flow {
-            try {
-                emit(Resources.Loading)
-                val authResult = auth.signInWithCredential(googleCredential).await()
-                val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
-                if (isNewUser) {
-                    //addUserToRealTimeDatabase()
-                    Log.d(AuthRepositoryImpl::class.simpleName, "Data is added!")
-                }
-                emit(Resources.Success(true))
-            } catch (e: Exception) {
-                emit(Resources.Error(e))
-            }
-        }.flowOn(Dispatchers.IO)
     }
 
     override fun getAuthState(viewModelScope: CoroutineScope) = callbackFlow {
@@ -202,6 +164,70 @@ class AuthRepositoryImpl @Inject constructor(
                 .addOnFailureListener {
                     onFailure()
                 }
+        }
+    }
+
+    override fun signInUserByGoogleProvider(): Flow<Resources<FirebaseUser>> {
+        return callbackFlow {
+            try {
+                Log.d(AuthRepositoryImpl::class.simpleName, "SignInWithGoogle: Loading")
+                trySend(Resources.Loading)
+                val result = credentialManager.getCredential(context = context, credentialRequest)
+                val credential = result.credential
+                if (credential is CustomCredential) {
+                    if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                        try {
+                            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                            val firebaseCredential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+                            auth.signInWithCredential(firebaseCredential)
+                                .addOnCompleteListener { result ->
+                                    if (result.isSuccessful) {
+                                        if (result.result.additionalUserInfo?.isNewUser != true) {
+                                            trySend(Resources.Error(Exception("User is exist")))
+                                            Log.d(
+                                                AuthRepositoryImpl::class.simpleName,
+                                                "signInWithGoogle: success"
+                                            )
+                                        }
+                                        addUserToDatabase(onSuccess = {
+                                            trySend(Resources.Success(result.result.user))
+                                            Log.d(
+                                                AuthRepositoryImpl::class.simpleName,
+                                                "signInWithGoogle: success"
+                                            )
+                                        }, onFailure = {
+                                            trySend(Resources.Error(Exception()))
+                                            Log.d(
+                                                AuthRepositoryImpl::class.simpleName,
+                                                "signInWithGoogle: success"
+                                            )
+                                        })
+
+                                    } else {
+                                        trySend(Resources.Error(Exception()))
+                                        Log.e(
+                                            AuthRepositoryImpl::class.simpleName,
+                                            "signInWithGoogle: Failure"
+                                        )
+                                    }
+                                }
+                        } catch (e: Exception) {
+                            trySend(Resources.Error(e))
+                            Log.e(
+                                AuthRepositoryImpl::class.simpleName,
+                                "signInWithGoogle: ${e.message}"
+                            )
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                trySend(Resources.Error(e))
+                Log.e(
+                    AuthRepositoryImpl::class.simpleName,
+                    "signInWithGoogle: ${e.message}"
+                )
+            }
+            awaitClose()
         }
     }
 }

@@ -109,4 +109,8 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer:$exoplayer_version"
     implementation "androidx.media3:media3-ui:$exoplayer_version"
     implementation "androidx.media3:media3-common:$exoplayer_version"
+    // Credentials
+    implementation "androidx.credentials:credentials:$credential_version"
+    implementation "androidx.credentials:credentials-play-services-auth:$credential_version"
+    implementation "com.google.android.libraries.identity.googleid:googleid:$identity_googleid_version"
 }

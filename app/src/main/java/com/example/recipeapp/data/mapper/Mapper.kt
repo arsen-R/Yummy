@@ -1,9 +1,49 @@
 package com.example.recipeapp.data.mapper
 
 import com.example.recipeapp.data.database.entity.RecipeEntity
-import com.example.recipeapp.data.network.dto.*
-import com.example.recipeapp.domain.model.*
+import com.example.recipeapp.data.network.dto.BrandDto
+import com.example.recipeapp.data.network.dto.CompilationDto
+import com.example.recipeapp.data.network.dto.ComponentDto
+import com.example.recipeapp.data.network.dto.CreditDto
+import com.example.recipeapp.data.network.dto.IngredientDto
+import com.example.recipeapp.data.network.dto.InstructionDto
+import com.example.recipeapp.data.network.dto.LinkedRecipeDto
+import com.example.recipeapp.data.network.dto.MeasurementDto
+import com.example.recipeapp.data.network.dto.NutritionDto
+import com.example.recipeapp.data.network.dto.PriceDto
+import com.example.recipeapp.data.network.dto.RecipeDto
+import com.example.recipeapp.data.network.dto.RecipeResultDto
+import com.example.recipeapp.data.network.dto.RenditionDto
+import com.example.recipeapp.data.network.dto.SectionDto
+import com.example.recipeapp.data.network.dto.ShowDto
+import com.example.recipeapp.data.network.dto.TagDto
+import com.example.recipeapp.data.network.dto.TagsListDto
+import com.example.recipeapp.data.network.dto.TopicDto
+import com.example.recipeapp.data.network.dto.TotalTimeTierDto
+import com.example.recipeapp.data.network.dto.UnitDto
+import com.example.recipeapp.data.network.dto.UserRatingsDto
+import com.example.recipeapp.domain.model.Brand
+import com.example.recipeapp.domain.model.Compilation
+import com.example.recipeapp.domain.model.Component
+import com.example.recipeapp.domain.model.Credit
+import com.example.recipeapp.domain.model.Ingredient
+import com.example.recipeapp.domain.model.Instruction
+import com.example.recipeapp.domain.model.LinkedRecipe
+import com.example.recipeapp.domain.model.Measurement
+import com.example.recipeapp.domain.model.Nutrition
+import com.example.recipeapp.domain.model.Price
+import com.example.recipeapp.domain.model.Recipe
+import com.example.recipeapp.domain.model.RecipeResult
+import com.example.recipeapp.domain.model.Rendition
+import com.example.recipeapp.domain.model.Section
+import com.example.recipeapp.domain.model.Show
+import com.example.recipeapp.domain.model.Tag
+import com.example.recipeapp.domain.model.TagsList
+import com.example.recipeapp.domain.model.Topic
+import com.example.recipeapp.domain.model.TotalTimeTier
 import com.example.recipeapp.domain.model.Units
+import com.example.recipeapp.domain.model.User
+import com.example.recipeapp.domain.model.UserRatings
 import com.google.firebase.auth.FirebaseUser
 
 
@@ -384,6 +424,7 @@ fun TagsListDto.toTagsList(): TagsList {
 fun FirebaseUser.toUser(): User {
     return User(
         uid = this.uid,
-        email = this.email
+        email = this.email,
+        provider = this.providerData[1].providerId
     )
 }

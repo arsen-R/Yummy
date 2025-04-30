@@ -1,15 +1,9 @@
 package com.example.recipeapp.presentation.screen.start
 
-import android.app.Activity.RESULT_OK
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -50,11 +43,6 @@ import com.example.recipeapp.presentation.component.SignUpButton
 import com.example.recipeapp.presentation.navigation.navigateToSignIn
 import com.example.recipeapp.presentation.navigation.navigateToSignUp
 import com.example.recipeapp.ui.theme.RecipeAppTheme
-import com.google.android.gms.auth.api.identity.BeginSignInResult
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.GoogleAuthProvider.getCredential
 
 @Composable
 internal fun StartScreen(
@@ -62,18 +50,14 @@ internal fun StartScreen(
     navController: NavController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val tapSignInResponse = viewModel.onTapSignInResponse.collectAsStateWithLifecycle().value
     val signInWithGoogleState = viewModel.signInWithGoogle.collectAsStateWithLifecycle().value
     LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Log.d("ScreenNavStateLog", "Navigate to StartScreen")
     StartScreen(
         modifier = modifier,
         navController = navController,
-        onTapSignInWithGoogle = viewModel::onTapSignInResponse,
         onSignInWithGoogle = viewModel::signInWithGoogle,
-        tapSignInResultState = tapSignInResponse,
         signInWithGoogleState = signInWithGoogleState,
-        onTapSignInClient = viewModel.oneTapClient
     )
 }
 
@@ -81,53 +65,15 @@ internal fun StartScreen(
 fun StartScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    onTapSignInWithGoogle: () -> Unit,
-    onSignInWithGoogle: (googleCredential: AuthCredential) -> Unit,
-    tapSignInResultState: OnTapSignInResultState,
-    signInWithGoogleState: SignInWithGoogleState, onTapSignInClient: SignInClient
+    onSignInWithGoogle: () -> Unit,
+    signInWithGoogleState: SignInWithGoogleState
 ) {
     val context = LocalContext.current
     StartScreenBody(
         modifier = modifier,
         navController = navController,
-        onSignInWithGoogle = onTapSignInWithGoogle
+        onSignInWithGoogle = onSignInWithGoogle
     )
-    val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                try {
-                    val credentials = onTapSignInClient.getSignInCredentialFromIntent(result.data)
-                    val googleIdToken = credentials.googleIdToken
-                    val googleCredentials = getCredential(googleIdToken, null)
-                    onSignInWithGoogle(googleCredentials)
-                } catch (it: ApiException) {
-                    print(it)
-                }
-            }
-        }
-
-    when (tapSignInResultState) {
-        is OnTapSignInResultState.Idle -> {
-            Unit
-        }
-
-        is OnTapSignInResultState.Success -> {
-            tapSignInResultState.beginSignInResult?.let {
-                LaunchedEffect(it) {
-                    launch(it, launcher)
-                }
-            }
-        }
-
-        is OnTapSignInResultState.Loading -> {
-            LoadingProgressBar()
-        }
-
-        is OnTapSignInResultState.Error -> {
-            Toast.makeText(context, tapSignInResultState.errorMessage, Toast.LENGTH_LONG).show()
-
-        }
-    }
 
     when (signInWithGoogleState) {
         is SignInWithGoogleState.Idle -> {
@@ -225,15 +171,6 @@ fun StartScreenBody(
         }
     }
 }
-
-fun launch(
-    signInResult: BeginSignInResult,
-    launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>
-) {
-    val intent = IntentSenderRequest.Builder(signInResult.pendingIntent.intentSender).build()
-    launcher.launch(intent)
-}
-
 
 @Preview(
     name = "Light Mode Portrait",
