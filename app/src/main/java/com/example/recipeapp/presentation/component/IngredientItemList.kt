@@ -45,8 +45,10 @@ fun IngredientItemListHeader(
                         color = MaterialTheme.colors.onPrimary,
                     )
                 }
-                ingredient?.components?.forEach {
-                    IngredientItemList(components = it)
+                ingredient?.components?.let { component ->
+                    component.forEach {
+                        IngredientItemList(components = it)
+                    }
                 }
             }
         }
@@ -55,7 +57,6 @@ fun IngredientItemListHeader(
 
 @Composable
 fun IngredientItemList(modifier: Modifier = Modifier, components: Component) {
-    val component = components.measurements?.get(components.measurements.lastIndex)
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -77,19 +78,22 @@ fun IngredientItemList(modifier: Modifier = Modifier, components: Component) {
                 color = MaterialTheme.colors.onPrimary,
             )
         }
-
-        if (component?.quantity!! != "0") {
-            Text(
-                text = component.quantity,
-                fontWeight = FontWeight.SemiBold,
-                modifier = modifier.padding(horizontal = 5.dp),
-            )
-        }
-        component.unit?.name?.let { unitName ->
-            Text(
-                text = unitName,
-                fontWeight = FontWeight.SemiBold,
-            )
+        if (!components.measurements.isNullOrEmpty()) {
+            components.measurements.last().apply {
+                if (quantity!! != "0") {
+                    Text(
+                        text = quantity,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = modifier.padding(horizontal = 5.dp),
+                    )
+                }
+                unit?.name?.let { unitName ->
+                    Text(
+                        text = unitName,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+            }
         }
     }
     Divider()
