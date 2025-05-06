@@ -65,7 +65,7 @@ fun IngredientItemList(modifier: Modifier = Modifier, components: Component) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        var extraComment = StringBuilder()
+        val extraComment = StringBuilder()
         if (components.extra_comment?.isNotBlank()!!) {
             extraComment.append(", ${components.extra_comment}")
         }

@@ -24,54 +24,57 @@ import com.example.recipeapp.ui.theme.RecipeAppTheme
 @Composable
 fun NutritionInfoBody(
     modifier: Modifier = Modifier,
-    nutrition: Nutrition
+    nutrition: Nutrition?
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Column(
+    nutrition?.updated_at?.let {
+        Row(
             modifier = modifier
                 .fillMaxWidth()
         ) {
-            Text(
-                text = "Nutrition Info",
-                modifier = modifier.padding(vertical = 5.dp),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-            NutritionInfoItem(
-                nutritionTitle = stringResource(id = R.string.calories_label),
-                nutritionCount = nutrition.calories
-            )
-            NutritionInfoItem(
-                nutritionTitle = stringResource(id = R.string.carbohydrates_label),
-                nutritionCount = nutrition.carbohydrates
-            )
-            NutritionInfoItem(
-                nutritionTitle = stringResource(id = R.string.fat_label),
-                nutritionCount = nutrition.fat
-            )
-            NutritionInfoItem(
-                nutritionTitle = stringResource(id = R.string.fiber_label),
-                nutritionCount = nutrition.fiber
-            )
-            NutritionInfoItem(
-                nutritionTitle = stringResource(id = R.string.protein_label),
-                nutritionCount = nutrition.protein
-            )
-            NutritionInfoItem(
-                nutritionTitle = stringResource(id = R.string.sugar_label),
-                nutritionCount = nutrition.sugar
-            )
-            Text(
-                text = "Estimated value based on one serving size",
-                fontSize = 12.sp,
-                color = Color.Gray,
-                modifier = modifier.padding(5.dp),
-            )
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Nutrition Info",
+                    modifier = modifier.padding(vertical = 5.dp),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                NutritionInfoItem(
+                    nutritionTitle = stringResource(id = R.string.calories_label),
+                    nutritionCount = nutrition?.calories
+                )
+                NutritionInfoItem(
+                    nutritionTitle = stringResource(id = R.string.carbohydrates_label),
+                    nutritionCount = nutrition?.carbohydrates
+                )
+                NutritionInfoItem(
+                    nutritionTitle = stringResource(id = R.string.fat_label),
+                    nutritionCount = nutrition?.fat
+                )
+                NutritionInfoItem(
+                    nutritionTitle = stringResource(id = R.string.fiber_label),
+                    nutritionCount = nutrition?.fiber
+                )
+                NutritionInfoItem(
+                    nutritionTitle = stringResource(id = R.string.protein_label),
+                    nutritionCount = nutrition?.protein
+                )
+                NutritionInfoItem(
+                    nutritionTitle = stringResource(id = R.string.sugar_label),
+                    nutritionCount = nutrition?.sugar
+                )
+                Text(
+                    text = "Estimated value based on one serving size",
+                    fontSize = 12.sp,
+                    color = Color.Gray,
+                    modifier = modifier.padding(5.dp),
+                )
+            }
         }
     }
+
 }
 
 @Composable
