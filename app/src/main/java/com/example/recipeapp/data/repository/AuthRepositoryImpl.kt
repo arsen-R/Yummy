@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuthEmailException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +35,6 @@ import javax.inject.Singleton
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val database: FirebaseDatabase,
     private val firestore: FirebaseFirestore,
     private val credentialRequest: GetCredentialRequest,
     private val credentialManager: CredentialManager,
@@ -127,20 +125,6 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(Resources.Error(e))
             }
         }.flowOn(Dispatchers.IO)
-    }
-
-    private fun addUserToRealTimeDatabase(onSuccess: () -> Unit, onFailure: () -> Unit) {
-        auth.currentUser?.apply {
-            database.getReference("users")
-                .child(uid)
-                .setValue(toUser()).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        onSuccess()
-                    }
-                }.addOnFailureListener {
-                    onFailure()
-                }
-        }
     }
 
     override fun singOutCurrentUser() {

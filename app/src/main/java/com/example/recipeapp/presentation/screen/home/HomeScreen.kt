@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
@@ -66,54 +66,50 @@ fun HomeScreen(
 ) {
     val swipeRefreshState =
         rememberSwipeRefreshState(isRefreshing = uiState.loadState.refresh is LoadState.Loading)
-    SwipeRefresh(state = swipeRefreshState, onRefresh = {
-        onFetchRecipeList()
-    }) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = modifier
-        ) {
-            items(uiState.itemCount) { index ->
-                val recipes = uiState[index]
-                val isRecipeSaved = remember {
-                    mutableStateOf(onRecipeSaved(recipes?.id!!))
-                }
-                RecipeItem(
-                    recipeResult = recipes,
-                    navController = navController,
-                    isRecipeSaved = isRecipeSaved.value,
-                    onSavedRecipeClick = {
-                        isRecipeSaved.value = !isRecipeSaved.value
-                        if (isRecipeSaved.value) {
-                            onSaveRecipe(recipes!!)
-                        } else {
-                            onRemoveRecipe(recipes?.id!!)
+    uiState.apply {
+        when (loadState.refresh) {
+            is LoadState.Loading -> {
+                LoadingProgressBar()
+                Log.d("ScreenNavStateLog", "Loading Refresh")
+            }
+
+            is LoadState.Error -> {
+                ErrorMessage(message = stringResource(id = R.string.no_connection), onRetryClick = {
+                    onFetchRecipeList()
+                })
+                Log.d("ScreenNavStateLog", "Error Refresh")
+            }
+
+            is LoadState.NotLoading -> {
+                Log.d("ScreenNavStateLog", "NotLoading Refresh")
+                SwipeRefresh(state = swipeRefreshState, onRefresh = {
+                    onFetchRecipeList()
+                }) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = modifier
+                    ) {
+                        items(uiState.itemCount) { index ->
+                            val recipes = uiState[index]
+                            val isRecipeSaved = remember {
+                                mutableStateOf(onRecipeSaved(recipes?.id!!))
+                            }
+                            RecipeItem(
+                                recipeResult = recipes,
+                                navController = navController,
+                                isRecipeSaved = isRecipeSaved.value,
+                                onSavedRecipeClick = {
+                                    isRecipeSaved.value = !isRecipeSaved.value
+                                    if (isRecipeSaved.value) {
+                                        onSaveRecipe(recipes!!)
+                                    } else {
+                                        onRemoveRecipe(recipes?.id!!)
+                                    }
+                                }
+                            )
                         }
                     }
-                )
-            }
-        }
-    }
-    uiState.apply {
-        when {
-            loadState.refresh is LoadState.Loading -> {
-                LoadingProgressBar()
-            }
-
-            loadState.refresh is LoadState.Error -> {
-                ErrorMessage(message = stringResource(id = R.string.no_connection), onRetryClick = {
-                    onFetchRecipeList()
-                })
-            }
-
-            loadState.append is LoadState.Loading -> {
-                //LoadingProgressBar()
-            }
-
-            loadState.append is LoadState.Error -> {
-                ErrorMessage(message = stringResource(id = R.string.no_connection), onRetryClick = {
-                    onFetchRecipeList()
-                })
+                }
             }
         }
     }
