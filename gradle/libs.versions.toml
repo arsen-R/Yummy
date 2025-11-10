@@ -2,9 +2,9 @@
 agp = "8.13.0"
 credentials = "1.5.0"
 googleid = "1.1.1"
-kotlin = "2.1.21"
+kotlin = "2.2.21"
 hilt = "2.57.2"
-ksp = "2.1.10-1.0.31"
+ksp = "2.2.21-2.0.4"
 googleServices = "4.4.4"
 
 accompanistSystemuicontroller = "0.36.0"
@@ -32,6 +32,10 @@ retrofit = "3.0.0"
 room = "2.8.3"
 runner = "1.7.0"
 core = "1.7.0"
+
+# Kotlin Multiplatform
+koin = "4.1.1"
+napier = "2.7.1"
 
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistSystemuicontroller" }
@@ -100,6 +104,16 @@ kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", versio
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
+
+# Multiplatform Libraries
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
