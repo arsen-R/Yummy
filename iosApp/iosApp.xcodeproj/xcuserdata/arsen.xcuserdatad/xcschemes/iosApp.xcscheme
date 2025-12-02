@@ -48,6 +48,13 @@
             ReferencedContainer = "container:iosApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "GOOGLE_SERVICE"
+            value = "/Users/arsen/AndroidStudioProjects/Yummy/composeApp/iosApp/GoogleService-Info.plist"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

@@ -1,9 +1,21 @@
 package com.example.recipeapp.di
 
+import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
+import org.koin.dsl.KoinAppDeclaration
 
-fun initKoin() {
+fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
     startKoin {
-        modules()
+        appDeclaration()
+        modules(
+            networkModule,
+            repositoryModule,
+            viewModelModule,
+            platformModule(),
+            mapperModule,
+            databaseModule
+        )
     }
-}
+
+
+fun KoinApplication.Companion.start(): KoinApplication = initKoin { }

@@ -1,0 +1,144 @@
+package com.example.recipeapp.presentation.component
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.recipeapp.domain.model.Component
+import com.example.recipeapp.domain.model.Ingredient
+import com.example.recipeapp.domain.model.Measurement
+import com.example.recipeapp.domain.model.Section
+import com.example.recipeapp.domain.model.Units
+import com.example.recipeapp.ui.theme.RecipeAppTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun IngredientItemListHeader(
+    modifier: Modifier = Modifier,
+    ingredient: Section? = null,
+) {
+    Box(
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = modifier.padding(vertical = 5.dp),
+            ) {
+                ingredient?.name?.let { sectionName ->
+                    Text(
+                        text = sectionName,
+                        modifier = modifier.padding(vertical = 5.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colors.onPrimary,
+                    )
+                }
+                ingredient?.components?.let { component ->
+                    component.forEach {
+                        IngredientItemList(components = it)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun IngredientItemList(modifier: Modifier = Modifier, components: Component) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        val extraComment = StringBuilder()
+        if (components.extra_comment?.isNotBlank()!!) {
+            extraComment.append(", ${components.extra_comment}")
+        }
+        components.ingredient?.name?.let { ingredientName ->
+            Text(
+                text = "$ingredientName$extraComment",
+                modifier = modifier
+                    .weight(.5f)
+                    .padding(end = 15.dp),
+                color = MaterialTheme.colors.onPrimary,
+            )
+        }
+        if (!components.measurements.isNullOrEmpty()) {
+            components.measurements.last().apply {
+                if (quantity!! != "0") {
+                    Text(
+                        text = quantity,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = modifier.padding(horizontal = 5.dp),
+                    )
+                }
+                unit?.name?.let { unitName ->
+                    Text(
+                        text = unitName,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+            }
+        }
+    }
+    Divider()
+}
+
+@Preview
+@Composable
+fun IngredientItemListHeaderPreview() {
+    val section = Section(
+        name = "Marinade", components = listOf(
+            Component(
+                ingredient = Ingredient(name = "cumin"), measurements = listOf(
+                    Measurement(quantity = "1", unit = Units(name = "teaspoon"))
+                )
+            ),
+            Component(
+                ingredient = Ingredient(name = "ground cardamom"), measurements = listOf(
+                    Measurement(quantity = "1", unit = Units(name = "teaspoon")),
+                )
+            )
+        )
+    )
+    RecipeAppTheme() {
+        IngredientItemListHeader(ingredient = section)
+    }
+}
+
+
+@Preview
+@Composable
+fun IngredientItemListPreview() {
+    val component = Component(
+        ingredient = Ingredient(name = "cumin"), measurements = listOf(
+            Measurement(quantity = "1", unit = Units(name = "teaspoon")),
+            Measurement(quantity = "1", unit = Units(name = "teaspoon"))
+        ),
+        extra_comment = ""
+    )
+    RecipeAppTheme {
+        IngredientItemList(
+            components = component
+        )
+    }
+}

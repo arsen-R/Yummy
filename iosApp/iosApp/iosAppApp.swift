@@ -10,8 +10,9 @@ import ComposeApp
 
 @main
 struct iosAppApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     init() {
-        KoinKt.doInitKoin()
+        KoinApplication.start()
     }
     var body: some Scene {
         WindowGroup {

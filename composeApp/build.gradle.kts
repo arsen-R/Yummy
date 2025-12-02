@@ -2,11 +2,14 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.gms.services)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.androidx.room)
+    alias(libs.plugins.kotlin.serialization.plugin)
+    alias(libs.plugins.kotlinCocoapods)
 }
 
 kotlin {
@@ -15,26 +18,32 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    val xcfName = "ComposeApp"
 
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
+    iosX64 ()
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        summary = "My compose multiplatform app"
+        version = "1.0"
+        homepage = "https://medium.com"
+        ios.deploymentTarget = "16.0"
+
+        framework {
+            baseName = "ComposeApp"
         }
-    }
 
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
+        pod("FirebaseCore") {
+            version = "~> 11.13"
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
-    }
 
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
+        pod("FirebaseAuth") {
+            version = "~> 11.13"
+            extraOpts += listOf("-compiler-option", "-fmodules")
         }
+        pod("FirebaseFirestore")
     }
-
     sourceSets {
         commonMain {
             dependencies {
@@ -45,6 +54,48 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
+
+                implementation(compose.runtime)
+                implementation(compose.ui)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+
+                implementation(libs.navigation.compose)
+
+                implementation (libs.kotlinx.coroutines.core)
+
+                implementation(libs.lifecycle.viewmodel)
+                implementation(libs.lifecycle.viewmodel.runtime)
+
+                implementation (libs.sqlite.bundled)
+                implementation (libs.androidx.room.runtime)
+
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.serialization.core)
+
+                implementation(libs.napier)
+
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
+                implementation(libs.ktor.logging)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.serialization)
+
+
+                implementation(libs.androidx.room.runtime)
+
+                implementation (libs.datastore.preferences)
+                implementation (libs.datastore)
+
+                //implementation (libs.androidx.paging)
+
+                implementation (libs.coil.compose)
+                implementation (libs.coil.network)
+
+                implementation(libs.paging.common)
+                implementation(libs.paging.compose.common)
             }
         }
 
@@ -59,10 +110,23 @@ kotlin {
                 implementation(libs.koin.android)
                 implementation(libs.koin.androidx.compose)
 
+                implementation(libs.ktor.client.android)
+
+                implementation (project.dependencies.platform(libs.firebase.bom))
+                implementation (libs.firebase.auth)
+                implementation (libs.firebase.firestore)
+
+                implementation(libs.androidx.paging.runtime)
+                implementation(libs.androidx.paging.compose)
+
+                implementation (libs.accompanist.systemuicontroller)
+                implementation (libs.accompanist.flowlayout)
             }
         }
         iosMain {
             dependencies {
+                implementation(libs.ktor.client.ios)
+                implementation(libs.paging.runtime.uikit)
             }
         }
     }
@@ -74,7 +138,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.recipeapp"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -111,62 +175,35 @@ android {
 dependencies {
     implementation (libs.androidx.core.ktx)
     implementation (libs.androidx.activity.compose)
-    implementation (libs.androidx.compose.ui)
-    implementation (libs.androidx.compose.ui.tooling.preview)
-    implementation (libs.androidx.compose.material)
     testImplementation (libs.junit)
     androidTestImplementation (libs.androidx.junit)
     androidTestImplementation (libs.androidx.espresso.core)
     androidTestImplementation (libs.androidx.compose.ui.test.junit4)
-    debugImplementation (libs.androidx.compose.ui.tooling)
-    debugImplementation (libs.androidx.compose.ui.test.manifest)
     // Accompanist
-    implementation (libs.accompanist.systemuicontroller)
-    implementation (libs.accompanist.swiperefresh)
-    implementation (libs.accompanist.flowlayout)
-    // Room
-    implementation (libs.androidx.room.runtime)
-    ksp (libs.androidx.room.compiler)
-    implementation (libs.androidx.room.ktx)
-    // Coroutines
-    implementation (libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
-    // OkHttp
-    implementation (libs.okhttp)
-    implementation (libs.logging.interceptor)
-    // Retrofit
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
-    // Navigation
-    implementation (libs.androidx.navigation.compose)
-    // Lifecycle
-    implementation (libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation (libs.androidx.lifecycle.viewmodel.compose)
-    implementation (libs.androidx.lifecycle.runtime.compose)
-    implementation (libs.androidx.lifecycle.runtime.ktx)
-    // Hilt
-    implementation (libs.hilt.android)
-    ksp (libs.hilt.compiler)
-    implementation (libs.androidx.hilt.navigation.compose)
-    // Coil
-    implementation (libs.coil.compose)
-    // Paging 3
-    implementation (libs.androidx.paging.runtime.ktx)
-    implementation (libs.androidx.paging.compose)
-    // Firebase
-    implementation (platform(libs.firebase.bom))
-    implementation (libs.firebase.auth)
-    implementation (libs.firebase.firestore)
     // Play Services Auth
     implementation (libs.play.services.auth)
-    // Datastore
-    implementation (libs.androidx.datastore.preferences)
     // Exoplayer
-    implementation (libs.androidx.media3.exoplayer)
-    implementation (libs.androidx.media3.ui)
-    implementation (libs.androidx.media3.common)
+//    implementation (libs.androidx.media3.exoplayer)
+//    implementation (libs.androidx.media3.ui)
+//    implementation (libs.androidx.media3.common)
     // Credentials
     implementation (libs.androidx.credentials)
     implementation (libs.androidx.credentials.play.services.auth)
     implementation (libs.googleid)
+
+    debugImplementation(compose.uiTooling)
+
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas") // Or any other desired path
+}
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.example.recipeapp.resources"
+    generateResClass = always
 }

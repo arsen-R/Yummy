@@ -1,0 +1,64 @@
+package com.example.recipeapp.presentation.component
+
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.example.recipeapp.resources.*
+import com.example.recipeapp.ui.theme.RecipeAppTheme
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun SignInButtonFromProvider(
+    modifier: Modifier = Modifier,
+    onSignIn: () -> Unit,
+    signInIcon: Painter,
+    signInTitle: String
+) {
+    OutlinedButton(
+        onClick = { onSignIn() },
+        modifier = modifier
+            .padding(horizontal = 15.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(50f),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
+    ) {
+        Icon(
+            painter = signInIcon, contentDescription = null,
+            modifier = modifier.size(24.dp),
+            tint = Color.Unspecified
+        )
+        Text(
+            text = signInTitle,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            modifier = modifier
+                .weight(1f),
+            color = Color.Black
+        )
+    }
+}
+
+@Preview
+@Composable
+fun SignInButtonFromProviderPreview() {
+    RecipeAppTheme {
+        SignInButtonFromProvider(
+            onSignIn = { /*TODO*/ },
+            signInIcon = painterResource(Res.drawable.apple),
+            signInTitle = "Continue with Google"
+        )
+    }
+}
