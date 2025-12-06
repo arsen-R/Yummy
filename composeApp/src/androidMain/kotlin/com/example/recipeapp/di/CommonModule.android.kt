@@ -2,7 +2,6 @@ package com.example.recipeapp.di
 
 import com.example.recipeapp.data.database.DatabaseFactory
 import com.example.recipeapp.data.firebase.FirebaseAuthService
-//import com.example.recipeapp.data.firebase.FirebaseFirestoreService
 import com.example.recipeapp.data.mapper.UserMapper
 import com.example.recipeapp.data.storage.DatastoreFactory
 import com.google.firebase.Firebase

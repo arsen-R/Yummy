@@ -55,8 +55,8 @@ actual class FirebaseAuthService(
         return mapper.fromDomain(auth.currentUser!!)
     }
 
-    actual val authStateFlow: Flow<Boolean>
-        get() = callbackFlow {
+    actual fun getAuthState(viewModelScope: CoroutineScope): Flow<Boolean> {
+        return callbackFlow {
             val authStateListener = FirebaseAuth.AuthStateListener { listener ->
                 if (listener.currentUser != null) {
                     Log.i(AuthRepositoryImpl::class.simpleName, "User is logged!")
@@ -67,5 +67,10 @@ actual class FirebaseAuthService(
             awaitClose {
                 auth.removeAuthStateListener(authStateListener)
             }
-        }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = auth.currentUser == null
+        )
+    }
 }

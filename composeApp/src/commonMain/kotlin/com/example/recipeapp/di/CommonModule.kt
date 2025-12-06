@@ -35,6 +35,7 @@ import com.example.recipeapp.domain.repository.SettingsRepository
 import com.example.recipeapp.presentation.screen.account_management.AccountManagementViewModel
 import com.example.recipeapp.presentation.screen.favorite.FavoriteViewModel
 import com.example.recipeapp.presentation.screen.home.HomeViewModel
+import com.example.recipeapp.presentation.screen.main.MainViewModel
 import com.example.recipeapp.presentation.screen.profile.SettingsViewModel
 import com.example.recipeapp.presentation.screen.recipe_detail.RecipeDetailViewModel
 import com.example.recipeapp.presentation.screen.search.SearchViewModel
@@ -107,7 +108,7 @@ val viewModelModule = module {
     viewModel { SearchViewModel(get()) }
     viewModel { RecipeDetailViewModel(get(), get()) }
     viewModel { SettingsViewModel(get()) }
-    //viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel(get()) }
     viewModel { MainActivityViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { FavoriteViewModel(get()) }

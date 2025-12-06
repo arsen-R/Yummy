@@ -1,17 +1,16 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'composeApp'
     spec.version                  = '1.0'
-    spec.homepage                 = 'https://medium.com'
+    spec.homepage                 = 'https://github.com/arsen-R/Yummy'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = ''
-    spec.summary                  = 'My compose multiplatform app'
+    spec.summary                  = 'Yummy'
     spec.vendored_frameworks      = 'build/cocoapods/framework/ComposeApp.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target    = '16.0'
-    spec.dependency 'FirebaseAuth', '~> 11.13'
-    spec.dependency 'FirebaseCore', '~> 11.13'
-    spec.dependency 'FirebaseFirestore'
+    spec.dependency 'FirebaseAuth', '11.15.0'
+    spec.dependency 'FirebaseCore', '11.15.0'
                 
     if !Dir.exist?('build/cocoapods/framework/ComposeApp.framework') || Dir.empty?('build/cocoapods/framework/ComposeApp.framework')
         raise "

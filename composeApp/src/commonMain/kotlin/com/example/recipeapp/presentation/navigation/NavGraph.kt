@@ -18,6 +18,7 @@ import com.example.recipeapp.presentation.screen.main.MainScreen
 import com.example.recipeapp.presentation.screen.profile.SettingsScreen
 import com.example.recipeapp.presentation.screen.search.SearchScreen
 import com.example.recipeapp.presentation.screen.account_management.AccountManagementScreen
+import com.example.recipeapp.presentation.screen.main.MainViewModel
 import com.example.recipeapp.presentation.screen.recipe_detail.RecipeDetailScreen
 import com.example.recipeapp.presentation.screen.recipe_detail.RecipeDetailViewModel
 import com.example.recipeapp.presentation.screen.signin.SignInScreen
@@ -61,13 +62,12 @@ fun NavGraph(
 
 @Composable
 fun RootNavGraph(navHostController: NavHostController) {
-//    val viewModel: MainViewModel = getKoin().get()
-//    val isUserLoggedIn = viewModel.isUserLogIn.collectAsStateWithLifecycle().value
+    val viewModel: MainViewModel = getKoin().get()
+    val isUserLoggedIn = viewModel.isUserLogIn.collectAsStateWithLifecycle().value
     NavHost(
         navController = navHostController,
         route = Graph.ROOT,
-        startDestination = Graph.HOME
-            //if (!isUserLoggedIn) Graph.HOME else Graph.AUTH
+        startDestination = if (!isUserLoggedIn) Graph.HOME else Graph.AUTH
     ) {
         composable(route = Graph.HOME) {
             MainScreen()

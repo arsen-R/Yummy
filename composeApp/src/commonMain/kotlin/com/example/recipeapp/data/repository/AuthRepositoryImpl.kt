@@ -9,16 +9,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 
 class AuthRepositoryImpl(
     private val firebaseAuth: FirebaseAuthService,
-    //private val firestoreService: FirebaseFirestoreService
-//    private val credentialRequest: GetCredentialRequest,
-//    private val credentialManager: CredentialManager,
-//    @ApplicationContext private val context: Context,
 ) : AuthRepository {
 
     override fun getCurrentUser(): User? {
@@ -30,7 +25,7 @@ class AuthRepositoryImpl(
     }
 
     override fun getAuthState(): Flow<Boolean> {
-        return firebaseAuth.authStateFlow
+        return firebaseAuth.getAuthState(viewModelScope = CoroutineScope(Dispatchers.IO))
     }
 
     override suspend fun signUpUserByEmailAndPassword(

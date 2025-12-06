@@ -19,30 +19,44 @@ kotlin {
         }
     }
 
-    iosX64 ()
-    iosArm64()
-    iosSimulatorArm64()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true  // KEEP THIS
+        }
+    }
 
     cocoapods {
-        summary = "My compose multiplatform app"
+        summary = "Yummy"
         version = "1.0"
-        homepage = "https://medium.com"
+        homepage = "https://github.com/arsen-R/Yummy"
         ios.deploymentTarget = "16.0"
+
+        podfile = project.file("../iosApp/Podfile")
 
         framework {
             baseName = "ComposeApp"
+            isStatic = true // Try changing this to true
         }
-
+        //noPodspec()
         pod("FirebaseCore") {
-            version = "~> 11.13"
-            extraOpts += listOf("-compiler-option", "-fmodules")
+            version = "11.15.0"
         }
-
         pod("FirebaseAuth") {
-            version = "~> 11.13"
-            extraOpts += listOf("-compiler-option", "-fmodules")
+            version = "11.15.0"
         }
-        pod("FirebaseFirestore")
+//        pod("FirebaseFirestoreInternal") {
+//            version = "11.15.0"
+//        }
+//        pod("FirebaseFirestore") {
+//            version = "11.15.0"
+//            extraOpts += listOf("-compiler-option", "-fmodules")
+//            useInteropBindingFrom("FirebaseFirestoreInternal")
+//        }
     }
     sourceSets {
         commonMain {
@@ -64,13 +78,13 @@ kotlin {
 
                 implementation(libs.navigation.compose)
 
-                implementation (libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.coroutines.core)
 
                 implementation(libs.lifecycle.viewmodel)
                 implementation(libs.lifecycle.viewmodel.runtime)
 
-                implementation (libs.sqlite.bundled)
-                implementation (libs.androidx.room.runtime)
+                implementation(libs.sqlite.bundled)
+                implementation(libs.androidx.room.runtime)
 
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.serialization.core)
@@ -86,16 +100,19 @@ kotlin {
 
                 implementation(libs.androidx.room.runtime)
 
-                implementation (libs.datastore.preferences)
-                implementation (libs.datastore)
+                implementation(libs.datastore.preferences)
+                implementation(libs.datastore)
 
                 //implementation (libs.androidx.paging)
 
-                implementation (libs.coil.compose)
-                implementation (libs.coil.network)
+                implementation(libs.coil.compose)
+                implementation(libs.coil.network)
 
                 implementation(libs.paging.common)
                 implementation(libs.paging.compose.common)
+
+//                implementation("dev.gitlive:firebase-firestore:1.10.0") // Use the latest version
+//                implementation("dev.gitlive:firebase-core:1.10.0")
             }
         }
 
@@ -112,15 +129,15 @@ kotlin {
 
                 implementation(libs.ktor.client.android)
 
-                implementation (project.dependencies.platform(libs.firebase.bom))
-                implementation (libs.firebase.auth)
-                implementation (libs.firebase.firestore)
+                implementation(project.dependencies.platform(libs.firebase.bom))
+                implementation(libs.firebase.auth)
+                implementation(libs.firebase.firestore)
 
                 implementation(libs.androidx.paging.runtime)
                 implementation(libs.androidx.paging.compose)
 
-                implementation (libs.accompanist.systemuicontroller)
-                implementation (libs.accompanist.flowlayout)
+                implementation(libs.accompanist.systemuicontroller)
+                implementation(libs.accompanist.flowlayout)
             }
         }
         iosMain {
@@ -173,23 +190,23 @@ android {
 }
 
 dependencies {
-    implementation (libs.androidx.core.ktx)
-    implementation (libs.androidx.activity.compose)
-    testImplementation (libs.junit)
-    androidTestImplementation (libs.androidx.junit)
-    androidTestImplementation (libs.androidx.espresso.core)
-    androidTestImplementation (libs.androidx.compose.ui.test.junit4)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     // Accompanist
     // Play Services Auth
-    implementation (libs.play.services.auth)
+    implementation(libs.play.services.auth)
     // Exoplayer
 //    implementation (libs.androidx.media3.exoplayer)
 //    implementation (libs.androidx.media3.ui)
 //    implementation (libs.androidx.media3.common)
     // Credentials
-    implementation (libs.androidx.credentials)
-    implementation (libs.androidx.credentials.play.services.auth)
-    implementation (libs.googleid)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     debugImplementation(compose.uiTooling)
 

@@ -4,6 +4,7 @@ import cocoapods.FirebaseAuth.FIRAuth
 import com.example.recipeapp.data.mapper.UserMapper
 import com.example.recipeapp.domain.model.User
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -97,14 +98,13 @@ actual class FirebaseAuthService(
         return mapper.fromDomain(auth.currentUser()!!)
     }
 
-
     @OptIn(ExperimentalForeignApi::class)
-    actual val authStateFlow: Flow<Boolean>
-        get() = callbackFlow {
+    actual fun getAuthState(viewModelScope: CoroutineScope): Flow<Boolean> {
+        return callbackFlow {
             val listener = auth.addAuthStateDidChangeListener { _, user ->
-                // true = logged in, false = logged out
-                trySend(user != null)
+                trySend(user == null)
             }
             awaitClose { auth.removeAuthStateDidChangeListener(listener) }
         }
+    }
 }
