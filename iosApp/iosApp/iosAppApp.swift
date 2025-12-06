@@ -6,9 +6,14 @@
 //
 
 import SwiftUI
+import ComposeApp
 
 @main
 struct iosAppApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    init() {
+        KoinApplication.start()
+    }
     var body: some Scene {
         WindowGroup {
             ContentView()
