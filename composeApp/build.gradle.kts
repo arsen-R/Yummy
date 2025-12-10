@@ -9,13 +9,12 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.androidx.room)
     alias(libs.plugins.kotlin.serialization.plugin)
-    alias(libs.plugins.kotlinCocoapods)
 }
 
 kotlin {
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -28,35 +27,6 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true  // KEEP THIS
         }
-    }
-
-    cocoapods {
-        summary = "Yummy"
-        version = "1.0"
-        homepage = "https://github.com/arsen-R/Yummy"
-        ios.deploymentTarget = "16.0"
-
-        podfile = project.file("../iosApp/Podfile")
-
-        framework {
-            baseName = "ComposeApp"
-            isStatic = true // Try changing this to true
-        }
-        //noPodspec()
-        pod("FirebaseCore") {
-            version = "11.15.0"
-        }
-        pod("FirebaseAuth") {
-            version = "11.15.0"
-        }
-//        pod("FirebaseFirestoreInternal") {
-//            version = "11.15.0"
-//        }
-//        pod("FirebaseFirestore") {
-//            version = "11.15.0"
-//            extraOpts += listOf("-compiler-option", "-fmodules")
-//            useInteropBindingFrom("FirebaseFirestoreInternal")
-//        }
     }
     sourceSets {
         commonMain {
@@ -103,16 +73,14 @@ kotlin {
                 implementation(libs.datastore.preferences)
                 implementation(libs.datastore)
 
-                //implementation (libs.androidx.paging)
-
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network)
 
                 implementation(libs.paging.common)
                 implementation(libs.paging.compose.common)
 
-//                implementation("dev.gitlive:firebase-firestore:1.10.0") // Use the latest version
-//                implementation("dev.gitlive:firebase-core:1.10.0")
+                implementation(libs.firebase.firestore)
+                implementation(libs.firebase.auth)
             }
         }
 
@@ -130,8 +98,6 @@ kotlin {
                 implementation(libs.ktor.client.android)
 
                 implementation(project.dependencies.platform(libs.firebase.bom))
-                implementation(libs.firebase.auth)
-                implementation(libs.firebase.firestore)
 
                 implementation(libs.androidx.paging.runtime)
                 implementation(libs.androidx.paging.compose)
@@ -184,8 +150,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

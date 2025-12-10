@@ -24,6 +24,7 @@ import com.example.recipeapp.data.mapper.TagsListMapper
 import com.example.recipeapp.data.mapper.TopicMapper
 import com.example.recipeapp.data.mapper.TotalTimeTierMapper
 import com.example.recipeapp.data.mapper.UnitsMapper
+import com.example.recipeapp.data.mapper.UserMapper
 import com.example.recipeapp.data.mapper.UserRatingsMapper
 import com.example.recipeapp.data.network.RecipeDataSource
 import com.example.recipeapp.data.repository.AuthRepositoryImpl
@@ -42,6 +43,9 @@ import com.example.recipeapp.presentation.screen.search.SearchViewModel
 import com.example.recipeapp.presentation.screen.signin.SignInViewModel
 import com.example.recipeapp.presentation.screen.signup.SignUpViewModel
 import com.example.recipeapp.presentation.screen.start.AuthViewModel
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
+import dev.gitlive.firebase.firestore.firestore
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -66,7 +70,7 @@ val networkModule = module {
                     host = "https://tasty.p.rapidapi.com"
                     headers.append(
                         "X-RapidAPI-Key",
-                        "856bebe788mshff1e35c3cc55068p104c2djsn64f4262291f5"
+                        "413e13c765msh1d6111fb808814cp18a7bbjsndc9cbccf645a"
                     )
                     headers.append("X-RapidAPI-Host", "tasty.p.rapidapi.com")
                 }
@@ -97,8 +101,11 @@ val networkModule = module {
 
 val repositoryModule = module {
     factory<RecipeRepository> { RecipeRepositoryImpl(get(), get(), get(), get(), get()) }
-    factory<AuthRepository> { AuthRepositoryImpl(get()) }
+    factory<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
     factory<SettingsRepository> { SettingsRepositoryImpl(get()) }
+
+    single { Firebase.auth }
+    single { Firebase.firestore }
 }
 
 val viewModelModule = module {
@@ -159,6 +166,7 @@ val mapperModule = module {
     single { TotalTimeTierMapper() }
     single { TopicMapper() }
     single { RecipeEntityMapper() }
+    single { UserMapper() }
 }
 
 val databaseModule = module {

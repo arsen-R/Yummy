@@ -1,10 +1,21 @@
 package com.example.recipeapp.data.repository
 
 import com.example.recipeapp.core.Result
-import com.example.recipeapp.data.firebase.FirebaseAuthService
+import com.example.recipeapp.data.mapper.UserMapper
 import com.example.recipeapp.domain.model.User
 import com.example.recipeapp.domain.repository.AuthRepository
-import kotlinx.coroutines.CoroutineScope
+import com.example.recipeapp.domain.util.Constants
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.FirebaseNetworkException
+import dev.gitlive.firebase.FirebaseTooManyRequestsException
+import dev.gitlive.firebase.auth.FirebaseAuth
+import dev.gitlive.firebase.auth.FirebaseAuthEmailException
+import dev.gitlive.firebase.auth.FirebaseAuthException
+import dev.gitlive.firebase.auth.FirebaseUser
+import dev.gitlive.firebase.auth.auth
+import dev.gitlive.firebase.firestore.FirebaseFirestore
+import dev.gitlive.firebase.firestore.firestore
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.awaitClose
@@ -13,39 +24,53 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 
 class AuthRepositoryImpl(
-    private val firebaseAuth: FirebaseAuthService,
+    private val auth: FirebaseAuth = Firebase.auth,
+    private val firestore: FirebaseFirestore = Firebase.firestore,
+    private val userMapper: UserMapper
 ) : AuthRepository {
 
-    override fun getCurrentUser(): User? {
-        return firebaseAuth.getCurrentUser()
+    override fun getCurrentUser(): User {
+        return userMapper.fromDomain(auth.currentUser)
     }
 
     override fun isCurrentUserAuthenticatedInFirebase(): Boolean {
-        return firebaseAuth.isCurrentUserAuthenticatedInFirebase()
+        return auth.currentUser != null
     }
 
-    override fun getAuthState(): Flow<Boolean> {
-        return firebaseAuth.getAuthState(viewModelScope = CoroutineScope(Dispatchers.IO))
+    override fun getAuthState(): Flow<FirebaseUser?> {
+        return auth.authStateChanged
     }
 
-    override suspend fun signUpUserByEmailAndPassword(
+    override fun signUpUserByEmailAndPassword(
         email: String,
         password: String
     ): Flow<Result<User>> {
         return callbackFlow {
             trySend(Result.Loading)
             try {
-                val user = firebaseAuth.signUpUserByEmailAndPassword(
-                    email,
-                    password
-                )
-                addUserToDatabase(onSuccess = {
+                val result = auth.createUserWithEmailAndPassword(email, password)
+                if (result.additionalUserInfo?.isNewUser == true) {
+                    val user = userMapper.fromDomain(result.user)
+                    addUserToDatabase(user)
+                    Napier.d(tag = AuthRepositoryImpl::class.simpleName) { "signUpUserByEmailAndPassword: User added to Firestore database" }
                     trySend(Result.Success(user))
-                }, onFailure = {
+                } else {
+                    Napier.e(tag = AuthRepositoryImpl::class.simpleName) { "signUpUserByEmailAndPassword: User not added to Firestore database" }
                     trySend(Result.Error(Exception("Firebase RealtimeDatabase is failed")))
-                })
-            }
-            catch (e: IllegalArgumentException) {
+                }
+            } catch (e: FirebaseAuthException) {
+                trySend(Result.Error(e))
+            } catch (e: FirebaseAuthEmailException) {
+                trySend(Result.Error(e))
+            } catch (e: FirebaseNetworkException) {
+                trySend(Result.Error(e))
+            } catch (e: FirebaseTooManyRequestsException) {
+                trySend(Result.Error(e))
+            } catch (e: IllegalArgumentException) {
+                trySend(Result.Error(e))
+            } catch (e: Exception) {
+                trySend(Result.Error(e))
+            } catch (e: IllegalArgumentException) {
                 trySend(Result.Error(e))
             } catch (e: Exception) {
                 trySend(Result.Error(e))
@@ -54,29 +79,27 @@ class AuthRepositoryImpl(
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun signInUserByEmailAndPassword(
+    override fun signInUserByEmailAndPassword(
         email: String,
         password: String
     ): Flow<Result<User>> {
         return callbackFlow {
             trySend(Result.Loading)
             try {
-                val user = firebaseAuth.signInUserByEmailAndPassword(
+                val user = auth.signInWithEmailAndPassword(
                     email,
                     password
                 )
-                trySend(Result.Success(user))
-            }
-//            catch (e: FirebaseAuthException) {
-//                trySend(Result.Error(e))
-//            } catch (e: FirebaseAuthEmailException) {
-//                trySend(Result.Error(e))
-//            } catch (e: FirebaseNetworkException) {
-//                trySend(Result.Error(e))
-//            } catch (e: FirebaseTooManyRequestsException) {
-//                trySend(Result.Error(e))
-//            }
-            catch (e: IllegalArgumentException) {
+                trySend(Result.Success(userMapper.fromDomain(user.user)))
+            } catch (e: FirebaseAuthException) {
+                trySend(Result.Error(e))
+            } catch (e: FirebaseAuthEmailException) {
+                trySend(Result.Error(e))
+            } catch (e: FirebaseNetworkException) {
+                trySend(Result.Error(e))
+            } catch (e: FirebaseTooManyRequestsException) {
+                trySend(Result.Error(e))
+            } catch (e: IllegalArgumentException) {
                 trySend(Result.Error(e))
             } catch (e: Exception) {
                 trySend(Result.Error(e))
@@ -86,17 +109,13 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun singOutCurrentUser() {
-        firebaseAuth.singOutCurrentUser()
+        auth.signOut()
     }
 
-    override fun addUserToDatabase(onSuccess: () -> Unit, onFailure: () -> Unit) {
-        getCurrentUser()?.apply {
-//            firestoreService.addUserToDatabase(
-//                user = getCurrentUser()!!,
-//                onSuccess = onSuccess,
-//                onFailure = onFailure
-//            )
-        }
+    override suspend fun addUserToDatabase(user: User) {
+        firestore.collection(Constants.USERS_COLLECTION_PATH)
+            .document(user.uid!!)
+            .set(user)
     }
 
 //    override fun signInUserByGoogleProvider(): Flow<Result<FirebaseUser>> {

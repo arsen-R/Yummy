@@ -6,7 +6,7 @@
 //
 import UIKit
 import Foundation
-import ComposeApp
+import Firebase
 
 class AppDelegate: NSObject, UIApplicationDelegate {
 
@@ -14,7 +14,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
-        KMPInitializerKt.onDidFinishLaunchingWithOptions()
+        FirebaseApp.configure()
         return true
     }
 }
