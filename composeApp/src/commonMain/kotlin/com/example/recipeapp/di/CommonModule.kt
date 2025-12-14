@@ -2,7 +2,8 @@ package com.example.recipeapp.di
 
 import com.example.recipeapp.MainActivityViewModel
 import com.example.recipeapp.data.database.RecipeDatabase
-import com.example.recipeapp.data.database.dao.RecipeDao
+import com.example.recipeapp.data.database.dao.FavoriteRecipeDao
+import com.example.recipeapp.data.database.dao.UserDao
 import com.example.recipeapp.data.mapper.BrandMapper
 import com.example.recipeapp.data.mapper.CompilationMapper
 import com.example.recipeapp.data.mapper.ComponentMapper
@@ -30,9 +31,11 @@ import com.example.recipeapp.data.network.RecipeDataSource
 import com.example.recipeapp.data.repository.AuthRepositoryImpl
 import com.example.recipeapp.data.repository.RecipeRepositoryImpl
 import com.example.recipeapp.data.repository.SettingsRepositoryImpl
+import com.example.recipeapp.data.repository.UserRepositoryImpl
 import com.example.recipeapp.domain.repository.AuthRepository
 import com.example.recipeapp.domain.repository.RecipeRepository
 import com.example.recipeapp.domain.repository.SettingsRepository
+import com.example.recipeapp.domain.repository.UserRepository
 import com.example.recipeapp.presentation.screen.account_management.AccountManagementViewModel
 import com.example.recipeapp.presentation.screen.favorite.FavoriteViewModel
 import com.example.recipeapp.presentation.screen.home.HomeViewModel
@@ -103,6 +106,7 @@ val repositoryModule = module {
     factory<RecipeRepository> { RecipeRepositoryImpl(get(), get(), get(), get(), get()) }
     factory<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
     factory<SettingsRepository> { SettingsRepositoryImpl(get()) }
+    factory<UserRepository> { UserRepositoryImpl(get(), get()) }
 
     single { Firebase.auth }
     single { Firebase.firestore }
@@ -170,7 +174,8 @@ val mapperModule = module {
 }
 
 val databaseModule = module {
-    single<RecipeDao> { get<RecipeDatabase>().recipeDao() }
+    single<FavoriteRecipeDao> { get<RecipeDatabase>().recipeDao() }
+    single<UserDao> { get<RecipeDatabase>().userDao() }
 }
 
 expect fun platformModule(): Module

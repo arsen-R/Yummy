@@ -4,11 +4,18 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.example.recipeapp.data.database.entity.RecipeEntity
+import com.example.recipeapp.data.database.entity.UserWithRecipes
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface RecipeDao {
+interface FavoriteRecipeDao {
+
+    @Transaction
+    @Query("SELECT * FROM user_table WHERE userId = :userId")
+    fun getAllRecipes(userId: String): Flow<UserWithRecipes>
+
     @Query("SELECT * FROM recipe_result_table")
     fun getAllRecipes(): Flow<List<RecipeEntity>>
 

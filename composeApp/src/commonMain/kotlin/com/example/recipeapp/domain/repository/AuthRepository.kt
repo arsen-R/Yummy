@@ -2,6 +2,7 @@ package com.example.recipeapp.domain.repository
 
 import com.example.recipeapp.core.Result
 import com.example.recipeapp.domain.model.User
+import dev.gitlive.firebase.auth.AuthResult
 import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
