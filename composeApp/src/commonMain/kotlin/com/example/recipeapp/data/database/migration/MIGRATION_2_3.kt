@@ -4,22 +4,20 @@ import androidx.room.migration.Migration
 import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.execSQL
 
-val MIGRATION_1_2 = object : Migration(1, 2) {
+val MIGRATION_2_3 = object : Migration(2, 3) {
     override fun migrate(connection: SQLiteConnection) {
         connection.execSQL("""
-            CREATE TABLE IF NOT EXISTS `user_table` (
+            ALTER TABLE `FavoriteRecipeEntityRef` RENAME TO `UserRecipeCrossRef`;
+        """.trimIndent())
+        connection.execSQL("""
+            CREATE TABLE IF NOT EXISTS `new_user_table` (
               `userId` TEXT NOT NULL,
               `provider` TEXT NOT NULL,
               `email` TEXT NOT NULL,
               PRIMARY KEY(`userId`)
             )
         """)
-        connection.execSQL("""
-            CREATE TABLE IF NOT EXISTS `FavoriteRecipeEntityRef` (
-               `userId` TEXT NOT NULL,
-               `id` INTEGER NOT NULL,
-               PRIMARY KEY(`userId`, `id`)
-               )
-        """.trimIndent())
+        connection.execSQL("DROP TABLE user_table")
+        connection.execSQL("ALTER TABLE user_table_new RENAME TO user_table")
     }
 }

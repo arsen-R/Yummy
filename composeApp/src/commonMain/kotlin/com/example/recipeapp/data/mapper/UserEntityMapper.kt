@@ -16,7 +16,7 @@ class UserEntityMapper: BidirectionalMapper<User?, UserEntity?> {
     override fun fromDomain(value: User?): UserEntity {
         return UserEntity(
             userId = value?.uid ?: "",
-            email = value?.email,
+            email = value?.email ?: "Unknown",
             provider = value?.provider ?: "unknown"
         )
     }

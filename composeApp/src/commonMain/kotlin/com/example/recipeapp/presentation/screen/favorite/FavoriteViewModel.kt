@@ -1,69 +1,61 @@
 package com.example.recipeapp.presentation.screen.favorite
 
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.domain.model.Recipe
+import com.example.recipeapp.domain.repository.DatastoreRepository
 import com.example.recipeapp.domain.repository.RecipeRepository
-import io.github.aakira.napier.Napier
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(
-    private val repository: RecipeRepository
-): ViewModel() {
+    private val repository: RecipeRepository,
+    private val datastoreRepository: DatastoreRepository,
+) : ViewModel() {
     private val _uiState = MutableStateFlow<FavoriteUiState>(FavoriteUiState())
     val uiState = _uiState.asStateFlow()
     private val _isRecipeSaved = MutableStateFlow(false)
     val isRecipeSaved = _isRecipeSaved.asStateFlow()
 
-
     init {
         getAllSavedRecipe()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getAllSavedRecipe() {
         viewModelScope.launch {
-            repository.getAllSavedRecipes().collectLatest { recipes ->
-                _uiState.value = FavoriteUiState(
-                    recipes = recipes,
-                    savedIds = recipes.map { it.id }.toSet()
-                )
-            }
+            datastoreRepository.getPreferenceSelection(stringPreferencesKey("USER_ID"))
+                .flatMapLatest { userId ->
+                    repository.getAllSavedRecipes(userId!!).filterNotNull()
+                }.collectLatest { recipes ->
+                    _uiState.value = FavoriteUiState(
+                        recipes = recipes,
+                        savedIds = recipes.map { it.id }.toSet()
+                    )
+                }
         }
     }
 
     fun toggleSave(recipe: Recipe) {
         viewModelScope.launch {
-            isRecipeAdded(recipe.id!!)
-            if (_isRecipeSaved.value) {
-                repository.removeRecipe(recipe.id)
-            } else {
-                repository.insertRecipe(recipe)
-            }
-            //getAllSavedRecipe() // refresh state
-        }
-    }
-
-    fun insertRecipe(recipe: Recipe) {
-        viewModelScope.launch {
-            repository.insertRecipe(recipe)
-        }
-    }
-
-    fun removeRecipe(recipeId: Int) {
-        viewModelScope.launch {
-            repository.removeRecipe(recipeId)
+            val userId = datastoreRepository
+                .getPreferenceSelection(stringPreferencesKey("USER_ID"))
+                .firstOrNull()
+                ?: return@launch
+            repository.toggleRecipe(userId, recipe)
         }
     }
 
     private fun isRecipeAdded(recipeId: Int) {
         viewModelScope.launch {
-            repository.isRecipeSaved(recipeId).collectLatest {
-                Napier.d(tag = "FavoriteViewModelLogger", message = "isRecipeAdded: $it",)
-                _isRecipeSaved.value = it
-            }
+            _isRecipeSaved.value = repository.isRecipeSaved(recipeId)
         }
     }
 

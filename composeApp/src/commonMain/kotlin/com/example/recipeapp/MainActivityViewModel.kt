@@ -3,7 +3,7 @@ package com.example.recipeapp
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipeapp.domain.repository.SettingsRepository
+import com.example.recipeapp.domain.repository.DatastoreRepository
 import com.example.recipeapp.domain.util.Constants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel (
-    private val repository: SettingsRepository
+    private val repository: DatastoreRepository
 ) : ViewModel() {
     private val _selectAppThemeKey = MutableStateFlow<Int?>(0)
     val selectAppThemeKey = _selectAppThemeKey.asStateFlow()

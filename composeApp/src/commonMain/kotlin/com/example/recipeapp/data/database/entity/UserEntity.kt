@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 data class UserEntity (
     @PrimaryKey
     val userId: String,
-    val email: String?,
-    //val createdDate: Date = Date(),
+    val email: String,
     val provider: String
 )

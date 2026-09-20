@@ -9,7 +9,7 @@ data class UserWithRecipes(
     @Relation(
         parentColumn = "userId",
         entityColumn = "id",
-        associateBy = Junction(FavoriteRecipeEntityRef::class)
+        associateBy = Junction(UserRecipeCrossRef::class)
     )
     val recipes: List<RecipeEntity>,
 )

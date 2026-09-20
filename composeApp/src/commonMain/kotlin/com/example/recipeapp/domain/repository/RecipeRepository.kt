@@ -2,6 +2,7 @@ package com.example.recipeapp.domain.repository
 
 import androidx.paging.PagingData
 import com.example.recipeapp.core.Result
+import com.example.recipeapp.data.database.entity.UserRecipeCrossRef
 import com.example.recipeapp.domain.model.Recipe
 import com.example.recipeapp.domain.model.RecipeResult
 import kotlinx.coroutines.flow.Flow
@@ -13,12 +14,17 @@ interface RecipeRepository {
 
     suspend fun searchRecipe(query: String): Flow<Result<RecipeResult>>
     suspend fun getAllSavedRecipes(): Flow<List<Recipe>>
+    suspend fun getAllSavedRecipes(userId: String): Flow<List<Recipe>?>
 
     suspend fun insertRecipe(recipeResult: Recipe)
 
+    suspend fun insertUserWithRecipes(crossRef: UserRecipeCrossRef)
+
+    suspend fun toggleRecipe(userId: String, recipe: Recipe)
+
     suspend fun removeRecipe(recipeId: Int)
 
-    suspend fun isRecipeSaved(recipeId: Int): Flow<Boolean>
+    suspend fun isRecipeSaved(recipeId: Int): Boolean
 
     fun getListRecipes(): Flow<PagingData<Recipe>>
 

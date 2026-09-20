@@ -4,6 +4,7 @@ import com.example.recipeapp.MainActivityViewModel
 import com.example.recipeapp.data.database.RecipeDatabase
 import com.example.recipeapp.data.database.dao.FavoriteRecipeDao
 import com.example.recipeapp.data.database.dao.UserDao
+import com.example.recipeapp.data.database.dao.UserWithRecipesDao
 import com.example.recipeapp.data.mapper.BrandMapper
 import com.example.recipeapp.data.mapper.CompilationMapper
 import com.example.recipeapp.data.mapper.ComponentMapper
@@ -25,16 +26,17 @@ import com.example.recipeapp.data.mapper.TagsListMapper
 import com.example.recipeapp.data.mapper.TopicMapper
 import com.example.recipeapp.data.mapper.TotalTimeTierMapper
 import com.example.recipeapp.data.mapper.UnitsMapper
+import com.example.recipeapp.data.mapper.UserEntityMapper
 import com.example.recipeapp.data.mapper.UserMapper
 import com.example.recipeapp.data.mapper.UserRatingsMapper
 import com.example.recipeapp.data.network.RecipeDataSource
 import com.example.recipeapp.data.repository.AuthRepositoryImpl
 import com.example.recipeapp.data.repository.RecipeRepositoryImpl
-import com.example.recipeapp.data.repository.SettingsRepositoryImpl
+import com.example.recipeapp.data.repository.DatastoreRepositoryImpl
 import com.example.recipeapp.data.repository.UserRepositoryImpl
 import com.example.recipeapp.domain.repository.AuthRepository
 import com.example.recipeapp.domain.repository.RecipeRepository
-import com.example.recipeapp.domain.repository.SettingsRepository
+import com.example.recipeapp.domain.repository.DatastoreRepository
 import com.example.recipeapp.domain.repository.UserRepository
 import com.example.recipeapp.presentation.screen.account_management.AccountManagementViewModel
 import com.example.recipeapp.presentation.screen.favorite.FavoriteViewModel
@@ -73,7 +75,7 @@ val networkModule = module {
                     host = "https://tasty.p.rapidapi.com"
                     headers.append(
                         "X-RapidAPI-Key",
-                        "413e13c765msh1d6111fb808814cp18a7bbjsndc9cbccf645a"
+                        "eae9cfafc9msh475555dcfd12729p1ce0c6jsn675bb8f50342"
                     )
                     headers.append("X-RapidAPI-Host", "tasty.p.rapidapi.com")
                 }
@@ -104,8 +106,8 @@ val networkModule = module {
 
 val repositoryModule = module {
     factory<RecipeRepository> { RecipeRepositoryImpl(get(), get(), get(), get(), get()) }
-    factory<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
-    factory<SettingsRepository> { SettingsRepositoryImpl(get()) }
+    factory<AuthRepository> { AuthRepositoryImpl(get(), get(), get(), get(), get()) }
+    factory<DatastoreRepository> { DatastoreRepositoryImpl(get()) }
     factory<UserRepository> { UserRepositoryImpl(get(), get()) }
 
     single { Firebase.auth }
@@ -119,10 +121,10 @@ val viewModelModule = module {
     viewModel { SearchViewModel(get()) }
     viewModel { RecipeDetailViewModel(get(), get()) }
     viewModel { SettingsViewModel(get()) }
-    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel(get(), get()) }
     viewModel { MainActivityViewModel(get()) }
-    viewModel { HomeViewModel(get()) }
-    viewModel { FavoriteViewModel(get()) }
+    viewModel { HomeViewModel(get(), get()) }
+    viewModel { FavoriteViewModel(get(), get()) }
     viewModel { AccountManagementViewModel(get()) }
 }
 val mapperModule = module {
@@ -171,11 +173,13 @@ val mapperModule = module {
     single { TopicMapper() }
     single { RecipeEntityMapper() }
     single { UserMapper() }
+    single { UserEntityMapper() }
 }
 
 val databaseModule = module {
     single<FavoriteRecipeDao> { get<RecipeDatabase>().recipeDao() }
     single<UserDao> { get<RecipeDatabase>().userDao() }
+    single<UserWithRecipesDao> { get<RecipeDatabase>().userWithRecipesDao() }
 }
 
 expect fun platformModule(): Module

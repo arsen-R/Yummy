@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.example.recipeapp.core.Result
 import com.example.recipeapp.core.safeApiCall
 import com.example.recipeapp.data.database.dao.FavoriteRecipeDao
+import com.example.recipeapp.data.database.entity.UserRecipeCrossRef
 import com.example.recipeapp.data.mapper.RecipeEntityMapper
 import com.example.recipeapp.data.mapper.RecipeMapper
 import com.example.recipeapp.data.mapper.RecipeResultMapper
@@ -47,19 +48,44 @@ class RecipeRepositoryImpl(
     }
 
     override suspend fun getAllSavedRecipes(): Flow<List<Recipe>> {
-        return favoriteRecipeDao.getAllRecipes().map { entities -> entities.map { recipeEntityMapper.toDomain(it) } }
+        return favoriteRecipeDao.getAllRecipes()
+            .map { entities -> entities.map { recipeEntityMapper.toDomain(it) } }
+    }
+
+    override suspend fun getAllSavedRecipes(userId: String): Flow<List<Recipe>?> {
+        return favoriteRecipeDao.getAllRecipes(userId)
+            .map { entities -> entities?.recipes?.map { recipeEntityMapper.toDomain(it) } }
     }
 
     override suspend fun insertRecipe(recipeResult: Recipe) {
         favoriteRecipeDao.insertRecipe(recipeEntityMapper.fromDomain(recipeResult))
     }
 
+    override suspend fun insertUserWithRecipes(crossRef: UserRecipeCrossRef) {
+        favoriteRecipeDao.insertUserWithRecipes(crossRef)
+    }
+
+    override suspend fun toggleRecipe(
+        userId: String,
+        recipe: Recipe
+    ) {
+        val recipeId = recipe.id ?: return
+        val ref = UserRecipeCrossRef(userId, recipeId)
+
+        if (isRecipeSaved(recipeId)) {
+            removeRecipe(recipeId)
+        } else {
+            insertRecipe(recipe)
+            insertUserWithRecipes(ref)
+        }
+    }
+
     override suspend fun removeRecipe(recipeId: Int) {
         favoriteRecipeDao.deleteRecipe(recipeId)
     }
 
-    override suspend fun isRecipeSaved(recipeId: Int): Flow<Boolean> {
-       return favoriteRecipeDao.isRecipeSaved(recipeId)
+    override suspend fun isRecipeSaved(recipeId: Int): Boolean {
+        return favoriteRecipeDao.isRecipeSaved(recipeId)
     }
 
     override fun getListRecipes(): Flow<PagingData<Recipe>> {

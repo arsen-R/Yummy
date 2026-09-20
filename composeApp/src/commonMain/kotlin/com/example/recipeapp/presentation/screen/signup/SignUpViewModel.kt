@@ -3,7 +3,9 @@ package com.example.recipeapp.presentation.screen.signup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.core.Result
+import com.example.recipeapp.domain.model.User
 import com.example.recipeapp.domain.repository.AuthRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest

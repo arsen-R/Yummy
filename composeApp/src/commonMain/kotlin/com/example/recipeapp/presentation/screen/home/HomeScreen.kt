@@ -12,13 +12,17 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import app.cash.paging.LoadState
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
+import app.cash.paging.PagingData
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.example.recipeapp.domain.model.Recipe
@@ -30,6 +34,7 @@ import com.example.recipeapp.resources.Res
 import com.example.recipeapp.resources.home_screen
 import com.example.recipeapp.resources.no_connection
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -40,19 +45,20 @@ internal fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel<HomeViewModel>(),
     navController: NavController,
 ) {
-//    Log.d("ScreenNavStateLog", "Navigate to HomeScreen")
     val uiState = homeViewModel.uiState.collectAsLazyPagingItems()
+    val isRecipeSaved = homeViewModel.isRecipeSaved.collectAsStateWithLifecycle().value
     Scaffold(
         topBar = {
             TopBar(title = stringResource(Res.string.home_screen))
         }, content = {
             Box(modifier = modifier.padding(it)) {
-                HomeScreen(
+                HomeScreenContent(
                     modifier = modifier,
                     uiState = uiState,
                     navController = navController,
                     onFetchRecipeList = homeViewModel::fetchRecipeList,
-                    onToggleSave = homeViewModel::toggleSave
+                    onToggleSave = homeViewModel::toggleSave,
+                    isRecipeSaved = isRecipeSaved
                 )
             }
         }
@@ -61,12 +67,13 @@ internal fun HomeScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen(
+fun HomeScreenContent(
     modifier: Modifier = Modifier,
     uiState: LazyPagingItems<Recipe>,
     navController: NavController,
     onFetchRecipeList: () -> Unit,
-    onToggleSave: (Recipe) -> Unit
+    onToggleSave: (Recipe) -> Unit,
+    isRecipeSaved: Boolean
 ) {
     val pullRefreshState =
         rememberPullRefreshState(
@@ -96,21 +103,16 @@ fun HomeScreen(
                     ) {
                         items(uiState.itemCount) { index ->
                             val recipes = uiState[index]
-                            val isRecipeSaved = remember {
-                                mutableStateOf(false)
+                            val isRecipeSavedState = remember {
+                                mutableStateOf(isRecipeSaved)
                             }
                             RecipeItem(
                                 recipeResult = recipes,
                                 navController = navController,
-                                isRecipeSaved = isRecipeSaved.value,
+                                isRecipeSaved = isRecipeSavedState.value,
                                 onSavedRecipeClick = {
-                                    isRecipeSaved.value = !isRecipeSaved.value
+                                    isRecipeSavedState.value = !isRecipeSavedState.value
                                     onToggleSave(recipes!!)
-//                                    if (isRecipeSaved.value) {
-//                                        onSaveRecipe(recipes!!)
-//                                    } else {
-//                                        onRemoveRecipe(recipes?.id!!)
-//                                    }
                                 }
                             )
                         }
@@ -131,7 +133,25 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-//    val homeViewModel: HomeViewModel = hiltViewModel()
-//    val navController = rememberNavController()
-//    HomeScreen(homeViewModel = homeViewModel, navController = navController)
+    val navController = rememberNavController()
+    val recipes = listOf(
+        Recipe(
+            id = 1,
+            name = "Recipe 1"
+        ),
+        Recipe(
+            id = 2,
+            name = "Recipe 2"
+        ),
+    )
+    val pagingDataFlow = flowOf(PagingData.from(recipes))
+    val lazyPagingItems = pagingDataFlow.collectAsLazyPagingItems()
+
+    HomeScreenContent(
+        uiState = lazyPagingItems,
+        navController = navController,
+        onFetchRecipeList = {},
+        onToggleSave = {},
+        isRecipeSaved = false
+    )
 }

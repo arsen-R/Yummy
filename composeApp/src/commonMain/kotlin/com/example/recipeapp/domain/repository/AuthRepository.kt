@@ -20,6 +20,11 @@ interface AuthRepository {
         email: String,
         password: String
     ): Flow<Result<User>>
+
+//     fun createUserByEmailAndPassword(
+//        email: String,
+//        password: String
+//    ): Flow<AuthResult>
      fun signInUserByEmailAndPassword(
         email: String,
         password: String

@@ -1,6 +1,8 @@
 package com.example.recipeapp.data.repository
 
 import com.example.recipeapp.core.Result
+import com.example.recipeapp.data.database.dao.UserDao
+import com.example.recipeapp.data.mapper.UserEntityMapper
 import com.example.recipeapp.data.mapper.UserMapper
 import com.example.recipeapp.domain.model.User
 import com.example.recipeapp.domain.repository.AuthRepository
@@ -8,6 +10,7 @@ import com.example.recipeapp.domain.util.Constants
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseNetworkException
 import dev.gitlive.firebase.FirebaseTooManyRequestsException
+import dev.gitlive.firebase.auth.AuthResult
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthEmailException
 import dev.gitlive.firebase.auth.FirebaseAuthException
@@ -21,12 +24,15 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class AuthRepositoryImpl(
     private val auth: FirebaseAuth = Firebase.auth,
     private val firestore: FirebaseFirestore = Firebase.firestore,
-    private val userMapper: UserMapper
+    private val userMapper: UserMapper,
+    private val userEntityMapper: UserEntityMapper,
+    private val userDao: UserDao
 ) : AuthRepository {
 
     override fun getCurrentUser(): User {
@@ -45,66 +51,94 @@ class AuthRepositoryImpl(
         email: String,
         password: String
     ): Flow<Result<User>> {
-        return callbackFlow {
-            trySend(Result.Loading)
-            try {
-                val result = auth.createUserWithEmailAndPassword(email, password)
-                if (result.additionalUserInfo?.isNewUser == true) {
-                    val user = userMapper.fromDomain(result.user)
-                    addUserToDatabase(user)
-                    Napier.d(tag = AuthRepositoryImpl::class.simpleName) { "signUpUserByEmailAndPassword: User added to Firestore database" }
-                    trySend(Result.Success(user))
-                } else {
-                    Napier.e(tag = AuthRepositoryImpl::class.simpleName) { "signUpUserByEmailAndPassword: User not added to Firestore database" }
-                    trySend(Result.Error(Exception("Firebase RealtimeDatabase is failed")))
+        return flow {
+            emit(Result.Loading)
+            kotlin.runCatching {
+                auth.createUserWithEmailAndPassword(email, password)
+            }.fold(
+                onSuccess = { result ->
+                    if (result.additionalUserInfo?.isNewUser == true) {
+                        val user = userMapper.fromDomain(result.user)
+                        userDao.insertUser(userEntityMapper.fromDomain(user))
+                        addUserToDatabase(user)
+                        Napier.d(tag = AuthRepositoryImpl::class.simpleName) { "signUpUserByEmailAndPassword: User added to Firestore database" }
+                        emit(Result.Success(user))
+                    } else {
+                        Napier.e(tag = AuthRepositoryImpl::class.simpleName) { "signUpUserByEmailAndPassword: User not added to Firestore database" }
+                        emit(Result.Error(IllegalStateException("Firebase returned a non-new user")))
+                    }
+                },
+                onFailure = { throwable ->
+                    Napier.e(tag = AuthRepositoryImpl::class.simpleName) {
+                        "signUpUserByEmailAndPassword failed: ${throwable.message}"
+                    }
+                    emit(Result.Error(throwable))
                 }
-            } catch (e: FirebaseAuthException) {
-                trySend(Result.Error(e))
-            } catch (e: FirebaseAuthEmailException) {
-                trySend(Result.Error(e))
-            } catch (e: FirebaseNetworkException) {
-                trySend(Result.Error(e))
-            } catch (e: FirebaseTooManyRequestsException) {
-                trySend(Result.Error(e))
-            } catch (e: IllegalArgumentException) {
-                trySend(Result.Error(e))
-            } catch (e: Exception) {
-                trySend(Result.Error(e))
-            } catch (e: IllegalArgumentException) {
-                trySend(Result.Error(e))
-            } catch (e: Exception) {
-                trySend(Result.Error(e))
-            }
-            awaitClose()
+            )
+//            try {
+//                val result = auth.createUserWithEmailAndPassword(email, password)
+//                if (result.additionalUserInfo?.isNewUser == true) {
+//                    val user = userMapper.fromDomain(result.user)
+//                    userDao.insertUser(userEntityMapper.fromDomain(user))
+//                    addUserToDatabase(user)
+//                    Napier.d(tag = AuthRepositoryImpl::class.simpleName) { "signUpUserByEmailAndPassword: User added to Firestore database" }
+//                    emit(Result.Success(user))
+//                } else {
+//                    Napier.e(tag = AuthRepositoryImpl::class.simpleName) { "signUpUserByEmailAndPassword: User not added to Firestore database" }
+//                    emit(Result.Error(Exception("Firebase RealtimeDatabase is failed")))
+//                }
+//            } catch (e: FirebaseAuthException) {
+//                emit(Result.Error(e))
+//            } catch (e: FirebaseAuthEmailException) {
+//                emit(Result.Error(e))
+//            } catch (e: FirebaseNetworkException) {
+//                emit(Result.Error(e))
+//            } catch (e: FirebaseTooManyRequestsException) {
+//                emit(Result.Error(e))
+//            } catch (e: IllegalArgumentException) {
+//                emit(Result.Error(e))
+//            } catch (e: Exception) {
+//                emit(Result.Error(e))
+//            } catch (e: IllegalArgumentException) {
+//                emit(Result.Error(e))
+//            } catch (e: Exception) {
+//                emit(Result.Error(e))
+//            }
         }.flowOn(Dispatchers.IO)
     }
+
+//    override fun createUserByEmailAndPassword(
+//        email: String,
+//        password: String
+//    ): Flow<AuthResult> {
+//        TODO("Not yet implemented")
+//    }
 
     override fun signInUserByEmailAndPassword(
         email: String,
         password: String
     ): Flow<Result<User>> {
-        return callbackFlow {
-            trySend(Result.Loading)
+        return flow {
+            emit(Result.Loading)
             try {
                 val user = auth.signInWithEmailAndPassword(
                     email,
                     password
                 )
-                trySend(Result.Success(userMapper.fromDomain(user.user)))
+                emit(Result.Success(userMapper.fromDomain(user.user)))
             } catch (e: FirebaseAuthException) {
-                trySend(Result.Error(e))
+                emit(Result.Error(e))
             } catch (e: FirebaseAuthEmailException) {
-                trySend(Result.Error(e))
+                emit(Result.Error(e))
             } catch (e: FirebaseNetworkException) {
-                trySend(Result.Error(e))
+                emit(Result.Error(e))
             } catch (e: FirebaseTooManyRequestsException) {
-                trySend(Result.Error(e))
+                emit(Result.Error(e))
             } catch (e: IllegalArgumentException) {
-                trySend(Result.Error(e))
+                emit(Result.Error(e))
             } catch (e: Exception) {
-                trySend(Result.Error(e))
+                emit(Result.Error(e))
             }
-            awaitClose()
         }.flowOn(Dispatchers.IO)
     }
 
