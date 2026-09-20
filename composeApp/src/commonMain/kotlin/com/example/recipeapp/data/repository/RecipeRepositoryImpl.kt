@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.recipeapp.core.Result
 import com.example.recipeapp.core.safeApiCall
-import com.example.recipeapp.data.database.dao.RecipeDao
+import com.example.recipeapp.data.database.dao.FavoriteRecipeDao
 import com.example.recipeapp.data.mapper.RecipeEntityMapper
 import com.example.recipeapp.data.mapper.RecipeMapper
 import com.example.recipeapp.data.mapper.RecipeResultMapper
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.map
 
 class RecipeRepositoryImpl(
     private val recipeApi: RecipeDataSource,
-    private val recipeDao: RecipeDao,
+    private val favoriteRecipeDao: FavoriteRecipeDao,
     private val recipeMapper: RecipeMapper,
     private val recipeResultMapper: RecipeResultMapper,
     private val recipeEntityMapper: RecipeEntityMapper
@@ -47,19 +47,19 @@ class RecipeRepositoryImpl(
     }
 
     override suspend fun getAllSavedRecipes(): Flow<List<Recipe>> {
-        return recipeDao.getAllRecipes().map { entities -> entities.map { recipeEntityMapper.toDomain(it) } }
+        return favoriteRecipeDao.getAllRecipes().map { entities -> entities.map { recipeEntityMapper.toDomain(it) } }
     }
 
     override suspend fun insertRecipe(recipeResult: Recipe) {
-        recipeDao.insertRecipe(recipeEntityMapper.fromDomain(recipeResult))
+        favoriteRecipeDao.insertRecipe(recipeEntityMapper.fromDomain(recipeResult))
     }
 
     override suspend fun removeRecipe(recipeId: Int) {
-        recipeDao.deleteRecipe(recipeId)
+        favoriteRecipeDao.deleteRecipe(recipeId)
     }
 
     override suspend fun isRecipeSaved(recipeId: Int): Flow<Boolean> {
-       return recipeDao.isRecipeSaved(recipeId)
+       return favoriteRecipeDao.isRecipeSaved(recipeId)
     }
 
     override fun getListRecipes(): Flow<PagingData<Recipe>> {

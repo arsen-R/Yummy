@@ -19,5 +19,4 @@ plugins {
     alias(libs.plugins.compose) apply false
     alias(libs.plugins.androidx.room) apply false
     alias(libs.plugins.kotlin.serialization.plugin) apply false
-    alias(libs.plugins.kotlinCocoapods) apply false
 }

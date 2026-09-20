@@ -2,7 +2,8 @@ package com.example.recipeapp.di
 
 import com.example.recipeapp.MainActivityViewModel
 import com.example.recipeapp.data.database.RecipeDatabase
-import com.example.recipeapp.data.database.dao.RecipeDao
+import com.example.recipeapp.data.database.dao.FavoriteRecipeDao
+import com.example.recipeapp.data.database.dao.UserDao
 import com.example.recipeapp.data.mapper.BrandMapper
 import com.example.recipeapp.data.mapper.CompilationMapper
 import com.example.recipeapp.data.mapper.ComponentMapper
@@ -24,14 +25,17 @@ import com.example.recipeapp.data.mapper.TagsListMapper
 import com.example.recipeapp.data.mapper.TopicMapper
 import com.example.recipeapp.data.mapper.TotalTimeTierMapper
 import com.example.recipeapp.data.mapper.UnitsMapper
+import com.example.recipeapp.data.mapper.UserMapper
 import com.example.recipeapp.data.mapper.UserRatingsMapper
 import com.example.recipeapp.data.network.RecipeDataSource
 import com.example.recipeapp.data.repository.AuthRepositoryImpl
 import com.example.recipeapp.data.repository.RecipeRepositoryImpl
 import com.example.recipeapp.data.repository.SettingsRepositoryImpl
+import com.example.recipeapp.data.repository.UserRepositoryImpl
 import com.example.recipeapp.domain.repository.AuthRepository
 import com.example.recipeapp.domain.repository.RecipeRepository
 import com.example.recipeapp.domain.repository.SettingsRepository
+import com.example.recipeapp.domain.repository.UserRepository
 import com.example.recipeapp.presentation.screen.account_management.AccountManagementViewModel
 import com.example.recipeapp.presentation.screen.favorite.FavoriteViewModel
 import com.example.recipeapp.presentation.screen.home.HomeViewModel
@@ -42,6 +46,9 @@ import com.example.recipeapp.presentation.screen.search.SearchViewModel
 import com.example.recipeapp.presentation.screen.signin.SignInViewModel
 import com.example.recipeapp.presentation.screen.signup.SignUpViewModel
 import com.example.recipeapp.presentation.screen.start.AuthViewModel
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
+import dev.gitlive.firebase.firestore.firestore
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -66,7 +73,7 @@ val networkModule = module {
                     host = "https://tasty.p.rapidapi.com"
                     headers.append(
                         "X-RapidAPI-Key",
-                        "856bebe788mshff1e35c3cc55068p104c2djsn64f4262291f5"
+                        "413e13c765msh1d6111fb808814cp18a7bbjsndc9cbccf645a"
                     )
                     headers.append("X-RapidAPI-Host", "tasty.p.rapidapi.com")
                 }
@@ -97,8 +104,12 @@ val networkModule = module {
 
 val repositoryModule = module {
     factory<RecipeRepository> { RecipeRepositoryImpl(get(), get(), get(), get(), get()) }
-    factory<AuthRepository> { AuthRepositoryImpl(get()) }
+    factory<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
     factory<SettingsRepository> { SettingsRepositoryImpl(get()) }
+    factory<UserRepository> { UserRepositoryImpl(get(), get()) }
+
+    single { Firebase.auth }
+    single { Firebase.firestore }
 }
 
 val viewModelModule = module {
@@ -159,10 +170,12 @@ val mapperModule = module {
     single { TotalTimeTierMapper() }
     single { TopicMapper() }
     single { RecipeEntityMapper() }
+    single { UserMapper() }
 }
 
 val databaseModule = module {
-    single<RecipeDao> { get<RecipeDatabase>().recipeDao() }
+    single<FavoriteRecipeDao> { get<RecipeDatabase>().recipeDao() }
+    single<UserDao> { get<RecipeDatabase>().userDao() }
 }
 
 expect fun platformModule(): Module
